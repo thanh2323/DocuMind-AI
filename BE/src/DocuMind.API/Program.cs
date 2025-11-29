@@ -16,7 +16,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 
 // ===================================================================
-// 3. JWT AUTHENTICATION
+// 2. JWT AUTHENTICATION
 // ===================================================================
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
