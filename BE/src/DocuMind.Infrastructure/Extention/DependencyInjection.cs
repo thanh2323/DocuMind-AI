@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DocuMind.Core.Interfaces;
+using DocuMind.Infrastructure.Data;
+using DocuMind.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DocuMind.Infrastructure.Extention
+{
+    public static class DependencyInjection
+    {
+        public static IServiceCollection AddInfrastructure(
+           this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<SqlServer>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+           
+
+            // Register repositories
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
+            services.AddScoped<IChatSessionRepository, ChatSessionRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+
+            return services;
+        }
+    }
+}
