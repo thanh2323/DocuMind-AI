@@ -51,11 +51,11 @@ namespace DocuMind.API.Controllers
         {
             try
             {
-                // Lấy email từ token claims nếu muốn bảo mật
+              
                 var email = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
                 if (email == null) return Unauthorized();
 
-                dto.Email = email; // override email từ token
+                dto.Email = email; 
                 var result = await _authService.ChangePasswordAsync(dto);
                 return Ok(result);
             }
