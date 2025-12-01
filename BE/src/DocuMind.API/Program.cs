@@ -10,18 +10,27 @@ builder.Services.AddOpenApi();
 
 
 // ===================================================================
-// 1.DATABASE CONFIGURATION & REPOSITORY PATTERN
+// DATABASE CONFIGURATION & REPOSITORY PATTERN
 // ===================================================================
 builder.Services.AddInfrastructure(builder.Configuration);
 
 
 // ===================================================================
-// 2. JWT AUTHENTICATION
+// JWT AUTHENTICATION
 // ===================================================================
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+// ===================================================================
+// CORS CONFIGURATION
+// ===================================================================
+
+builder.Services.AddCORSPolicy(builder.Configuration);
+
 var app = builder.Build();
 
+
+// CORS must be before Authentication
+app.UseCors("AllowFrontend");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -29,7 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -8,10 +8,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DocuMind.Infrastructure.Extention
 {
-    public static class AuthenticationExtensions
+    public static class JwtExtensions
     {
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+
+            if (IsEfMigration())
+                return services;
+
             var jwtSettings = configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
 
@@ -42,6 +46,10 @@ namespace DocuMind.Infrastructure.Extention
             });
 
             return services;
+        }
+        private static bool IsEfMigration()
+        {
+            return AppDomain.CurrentDomain.FriendlyName == "ef";
         }
     }
 }
