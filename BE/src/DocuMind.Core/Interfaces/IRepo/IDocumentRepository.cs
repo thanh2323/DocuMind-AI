@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using DocuMind.Core.Entities;
 using DocuMind.Core.Enum;
 
-namespace DocuMind.Core.Interfaces
+namespace DocuMind.Core.Interfaces.IRepo
 {
    public interface IDocumentRepository : IRepository<Document>
     {

@@ -1,6 +1,6 @@
 ﻿using DocuMind.Core.Entities;
 using DocuMind.Core.Enum;
-using DocuMind.Core.Interfaces;
+using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

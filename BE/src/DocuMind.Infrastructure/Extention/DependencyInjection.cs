@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocuMind.Core.Interfaces;
+using DocuMind.Core.Interfaces.IAuth;
+using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
 using DocuMind.Infrastructure.Repositories;
+using DocuMind.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,11 @@ namespace DocuMind.Infrastructure.Extention
             services.AddScoped<IChatSessionRepository, ChatSessionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+
+
+            // JWT & Password Services
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             return services;
         }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DocuMind.Core.Entities;
 
-namespace DocuMind.Core.Interfaces
+namespace DocuMind.Core.Interfaces.IRepo
 {
     public  interface IUserRepository : IRepository<User>
     {
