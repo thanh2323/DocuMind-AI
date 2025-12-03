@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocuMind.Application.Interface.IAuth;
+using DocuMind.Application.Services;
 using DocuMind.Core.Interfaces.IAuth;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
@@ -32,6 +34,8 @@ namespace DocuMind.Infrastructure.Extention
 
 
             // JWT & Password Services
+ 
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 

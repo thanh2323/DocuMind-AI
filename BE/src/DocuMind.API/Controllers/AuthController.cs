@@ -1,4 +1,5 @@
-﻿using DocuMind.Application.DTOs.Auth;
+﻿using System.Security.Claims;
+using DocuMind.Application.DTOs.Auth;
 using DocuMind.Application.Interface.IAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -51,9 +52,9 @@ namespace DocuMind.API.Controllers
         {
             try
             {
-              
-                var email = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
-                if (email == null) return Unauthorized();
+
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                if (email == null) return Unauthorized(new { message = "You don't have account"});
 
                 dto.Email = email; 
                 var result = await _authService.ChangePasswordAsync(dto);
@@ -68,6 +69,7 @@ namespace DocuMind.API.Controllers
                 return Unauthorized(new { message = ex.Message });
             }
         }
+   
     }
 }
 

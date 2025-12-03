@@ -1,4 +1,7 @@
+using DocuMind.Core.Entities;
+using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Extention;
+using DocuMind.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +29,10 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddCORSPolicy(builder.Configuration);
 
+
+
 var app = builder.Build();
+
 
 
 // CORS must be before Authentication
@@ -42,5 +48,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

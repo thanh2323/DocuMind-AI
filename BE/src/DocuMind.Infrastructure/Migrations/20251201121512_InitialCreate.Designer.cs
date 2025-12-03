@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocuMind.Infrastructure.Migrations
 {
     [DbContext(typeof(SqlServer))]
-    [Migration("20251201083750_InitialCreate")]
+    [Migration("20251201121512_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

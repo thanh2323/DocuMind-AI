@@ -1,4 +1,5 @@
 ﻿
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +19,8 @@ namespace DocuMind.Infrastructure.Extention
 
             var jwtSettings = configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
 
             services.AddAuthentication(options =>
             {
@@ -41,13 +44,12 @@ namespace DocuMind.Infrastructure.Extention
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-             
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
             });
 
             return services;
         }
-        private static bool IsEfMigration()
+          private static bool IsEfMigration()
         {
             return AppDomain.CurrentDomain.FriendlyName == "ef";
         }
