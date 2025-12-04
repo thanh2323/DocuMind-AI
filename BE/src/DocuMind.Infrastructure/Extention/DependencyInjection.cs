@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DocuMind.Application.Interface.IAuth;
+using DocuMind.Application.Interface.IUser;
 using DocuMind.Application.Services;
 using DocuMind.Core.Interfaces.IAuth;
 using DocuMind.Core.Interfaces.IRepo;
@@ -38,6 +39,9 @@ namespace DocuMind.Infrastructure.Extention
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+            //User Services
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }
