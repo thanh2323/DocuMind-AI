@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using DocuMind.Application.Interface.IAuth;
 using DocuMind.Application.Interface.IUser;
-using DocuMind.Application.Services;
+using DocuMind.Application.Services.AuthService;
+using DocuMind.Application.Services.UserService;
 using DocuMind.Core.Interfaces.IAuth;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
@@ -42,7 +39,7 @@ namespace DocuMind.Infrastructure.Extention
 
             //User Services
             services.AddScoped<IUserService, UserService>();
-
+            services.AddScoped<IDashboardService, DashBoardService>();
             return services;
         }
     }

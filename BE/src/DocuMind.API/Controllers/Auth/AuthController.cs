@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DocuMind.API.Controllers
+namespace DocuMind.API.Controllers.Auth
 {
     [Route("api/[controller]")]
     [ApiController]

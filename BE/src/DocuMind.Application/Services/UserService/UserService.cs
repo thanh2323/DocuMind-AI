@@ -14,7 +14,8 @@ using Microsoft.Extensions.Logging;
 
 
 
-namespace DocuMind.Application.Services
+namespace DocuMind.Application.Services.UserService
+
 {
     public class UserService : IUserService
     {
@@ -43,7 +44,7 @@ namespace DocuMind.Application.Services
                 return ServiceResult<UserProfileDto>.Fail("User not found");
             }
             // Get total documents
-            var totalDocuments = await _documentRepository.GetUserDocumentCountAsync(id);
+            var totalDocuments = await _documentRepository.CountUserDocumentsAsync(id);
 
             //  Get total chat sessions
             var chatSessions = await _chatSessionRepository.GetByUserIdAsync(id);

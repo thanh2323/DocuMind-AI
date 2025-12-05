@@ -10,6 +10,8 @@ namespace DocuMind.Core.Interfaces.IRepo
     public interface IChatSessionRepository : IRepository<ChatSession>
     {
         Task<ChatSession?> GetWithDocumentsAsync(int sessionId);
+        Task<List<ChatSession>> GetRecentChatsAsync(int userId, int take);
+
         Task<IEnumerable<ChatSession>> GetByUserIdAsync(int userId);
         Task<ChatSession?> GetWithRecentMessagesAsync(int sessionId, int count);
     }

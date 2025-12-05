@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using DocuMind.Application.DTOs.Auth;
 using DocuMind.Application.DTOs.Common;
 using DocuMind.Application.DTOs.User;
+using DocuMind.Application.DTOs.User.Dashboard;
 using DocuMind.Application.Interface.IUser;
-using DocuMind.Application.Services;
+
+using DocuMind.Application.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DocuMind.API.Controllers
+namespace DocuMind.API.Controllers.User
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,12 +18,13 @@ namespace DocuMind.API.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly ILogger<UserController> _logger;
+       
 
-        public UserController(IUserService userService, ILogger<UserController> logger)
+        public UserController(IUserService userService)
         {
+         
             _userService = userService;
-            _logger = logger;
+       
         }
 
         [HttpGet("profile")]
@@ -47,5 +50,7 @@ namespace DocuMind.API.Controllers
                 return BadRequest(ApiResponse<UserProfileDto>.ErrorResponse(result.Message));
             return Ok(ApiResponse<UserProfileDto>.SuccessResponse(result.Data!, result.Message));
         }
+
+      
     }
 }
