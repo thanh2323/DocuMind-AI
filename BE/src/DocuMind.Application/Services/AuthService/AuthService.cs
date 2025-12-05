@@ -9,7 +9,7 @@ using System.Security.Claims;
 using DocuMind.Application.DTOs.Common;
 using DocuMind.Application.DTOs.User;
 
-namespace DocuMind.Application.Services
+namespace DocuMind.Application.Services.AuthService
 {
     public class AuthService : IAuthService
     {
