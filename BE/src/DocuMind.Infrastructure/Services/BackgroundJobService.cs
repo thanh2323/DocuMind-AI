@@ -7,7 +7,21 @@ using DocuMind.Core.Interfaces.IBackgroundJob;
 
 namespace DocuMind.Infrastructure.Services
 {
-  public   class BackgroundJobService : IBackgroundJobService
+    public class BackgroundJobService : IBackgroundJobService
     {
+        public string EnqueueDocumentProcessing(int documentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RecurringDocumentCleanup()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ScheduleDocumentProcessing(int documentId, TimeSpan delay)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
