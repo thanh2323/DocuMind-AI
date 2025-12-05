@@ -25,6 +25,9 @@ packages/
 # Dotnet local tools
 .dotnet/tools/
 
+appsettings.Development.json
+
+
 # ===============================
 # Node / React
 # ===============================

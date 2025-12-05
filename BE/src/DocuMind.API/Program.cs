@@ -26,10 +26,15 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // ===================================================================
 // CORS CONFIGURATION
 // ===================================================================
-
 builder.Services.AddCORSPolicy(builder.Configuration);
 
 
+// ===================================================================
+// HANGFIRE CONFIGURATION
+// ===================================================================
+builder.Services
+    .AddHangfireConfiguration(builder.Configuration)
+     .AddHangfireServerWithConfig(builder.Configuration);
 
 var app = builder.Build();
 
