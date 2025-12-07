@@ -16,7 +16,7 @@ using DocuMind.Core.Interfaces.IRepo;
 
 namespace DocuMind.Application.Services.UserService
 {
-    public class DashBoardService : IDashboardService
+    public class DashBoardService : IUserDashboardService
     {
         private readonly IDocumentRepository _documentRepository;
         private readonly IChatSessionRepository _chatSessionRepository;
@@ -31,9 +31,9 @@ namespace DocuMind.Application.Services.UserService
         public async Task<ServiceResult<UserDashboardDto>> GetDashboardAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
+            if (user!.IsLocked)
             {
-                return ServiceResult<UserDashboardDto>.Fail("User not found");
+                return ServiceResult<UserDashboardDto>.Fail("Your account has been locked. Please contact support.");
             }
 
             // Get total documents and status counts

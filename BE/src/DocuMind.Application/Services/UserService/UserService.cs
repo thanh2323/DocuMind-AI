@@ -4,8 +4,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using DocuMind.Application.DTOs.Auth;
 using DocuMind.Application.DTOs.Common;
 using DocuMind.Application.DTOs.User;
+using DocuMind.Application.DTOs.User.Dashboard;
 using DocuMind.Application.Interface;
 using DocuMind.Application.Interface.IUser;
 using DocuMind.Core.Entities;
@@ -39,9 +41,9 @@ namespace DocuMind.Application.Services.UserService
         public async Task<ServiceResult<UserProfileDto>> GetProfile(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
+            if (user!.IsLocked)
             {
-                return ServiceResult<UserProfileDto>.Fail("User not found");
+                return ServiceResult<UserProfileDto>.Fail("Your account has been locked. Please contact support.");
             }
             // Get total documents
             var totalDocuments = await _documentRepository.CountUserDocumentsAsync(id);
@@ -68,9 +70,9 @@ namespace DocuMind.Application.Services.UserService
         public async Task<ServiceResult<UserProfileDto>> UpdateProfile(int id, UpdateProfileDto dto)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
+            if (user!.IsLocked)
             {
-                return ServiceResult<UserProfileDto>.Fail("User not found");
+                return ServiceResult<UserProfileDto>.Fail("Your account has been locked. Please contact support.");
             }
 
             // Update fields

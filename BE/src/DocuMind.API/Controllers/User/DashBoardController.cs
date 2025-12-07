@@ -10,8 +10,8 @@ namespace DocuMind.API.Controllers.User
     [Route("api/[controller]")]
     public class DashBoardController : Controller
     {
-        private readonly IDashboardService _dashboardService;
-        public DashBoardController(IDashboardService dashboardService)
+        private readonly IUserDashboardService _dashboardService;
+        public DashBoardController(IUserDashboardService dashboardService)
         {
             _dashboardService = dashboardService;
         }

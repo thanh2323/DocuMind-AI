@@ -1,6 +1,7 @@
 using DocuMind.Core.Entities;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Extention;
+using DocuMind.Infrastructure.Middleware;
 using DocuMind.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,10 +27,15 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // ===================================================================
 // CORS CONFIGURATION
 // ===================================================================
-
 builder.Services.AddCORSPolicy(builder.Configuration);
 
 
+// ===================================================================
+// HANGFIRE CONFIGURATION
+// ===================================================================
+builder.Services
+    .AddHangfireConfiguration(builder.Configuration)
+    .AddHangfireServerWithConfig(builder.Configuration);
 
 var app = builder.Build();
 
@@ -44,9 +50,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-
+app.UseAuthentication(); 
+app.UseHangfireDashboardConfigured(); // Hangfire Dashboard Middleware
+app.UseAuthorization(); 
 app.MapControllers();
 
 

@@ -4,6 +4,7 @@ using DocuMind.Application.Interface.IUser;
 using DocuMind.Application.Services.AuthService;
 using DocuMind.Application.Services.UserService;
 using DocuMind.Core.Interfaces.IAuth;
+using DocuMind.Core.Interfaces.IBackgroundJob;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
 using DocuMind.Infrastructure.Repositories;
@@ -39,7 +40,10 @@ namespace DocuMind.Infrastructure.Extention
 
             //User Services
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IDashboardService, DashBoardService>();
+            services.AddScoped<IUserDashboardService, DashBoardService>();
+
+            //Background Job Services   
+            services.AddScoped<IBackgroundJobService, BackgroundJobService>();
             return services;
         }
     }

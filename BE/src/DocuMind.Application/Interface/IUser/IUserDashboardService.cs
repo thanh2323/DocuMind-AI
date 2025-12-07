@@ -8,7 +8,7 @@ using DocuMind.Application.DTOs.User.Dashboard;
 
 namespace DocuMind.Application.Interface.IUser
 {
-    public interface IDashboardService
+    public interface IUserDashboardService
     {
         Task<ServiceResult<UserDashboardDto>> GetDashboardAsync(int id);
     }
