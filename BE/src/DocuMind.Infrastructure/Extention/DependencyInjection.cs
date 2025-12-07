@@ -5,6 +5,7 @@ using DocuMind.Application.Services.AuthService;
 using DocuMind.Application.Services.UserService;
 using DocuMind.Core.Interfaces.IAuth;
 using DocuMind.Core.Interfaces.IBackgroundJob;
+using DocuMind.Core.Interfaces.IPdf;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
 using DocuMind.Infrastructure.Repositories;
@@ -44,6 +45,10 @@ namespace DocuMind.Infrastructure.Extention
 
             //Background Job Services   
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+
+            // PDF Processor Service
+            services.AddScoped<IPdfProcessorService, PdfProcessorService>();
+
             return services;
         }
     }
