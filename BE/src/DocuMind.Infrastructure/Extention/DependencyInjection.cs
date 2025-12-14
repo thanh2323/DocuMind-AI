@@ -5,10 +5,13 @@ using DocuMind.Application.Services.AuthService;
 using DocuMind.Application.Services.UserService;
 using DocuMind.Core.Interfaces.IAuth;
 using DocuMind.Core.Interfaces.IBackgroundJob;
+using DocuMind.Core.Interfaces.IEmbedding;
+using DocuMind.Core.Interfaces.IPdf;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
 using DocuMind.Infrastructure.Repositories;
 using DocuMind.Infrastructure.Services;
+using iText.StyledXmlParser.Jsoup.Parser;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +47,21 @@ namespace DocuMind.Infrastructure.Extention
 
             //Background Job Services   
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+
+            // PDF Pre-Processor Service
+            services.AddScoped<IPdfProcessorService, PdfProcessorService>();
+
+            // Embedding Service With Gemini
+            services.AddScoped<IEmbeddingService, OllamaEmbeddingService>();
+
+            // Configure HttpClient for Ollama
+            services.AddHttpClient("Ollama", client =>
+            {
+                client.BaseAddress = new Uri(configuration["Ollama:BaseUrl"] ?? "http://localhost:11434");
+                client.Timeout = TimeSpan.FromSeconds(int.TryParse(configuration["Ollama:TimeoutSeconds"], out var timeout) ? timeout : 60);
+
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
             return services;
         }
     }

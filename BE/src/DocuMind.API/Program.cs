@@ -50,7 +50,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); 
+
+app.UseCors("DocuMindCORSPolicy"); // CORS Middleware
+app.UseAuthentication();
+
 app.UseHangfireDashboardConfigured(); // Hangfire Dashboard Middleware
 app.UseAuthorization(); 
 app.MapControllers();
