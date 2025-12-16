@@ -8,6 +8,7 @@ using DocuMind.Core.Interfaces.IBackgroundJob;
 using DocuMind.Core.Interfaces.IEmbedding;
 using DocuMind.Core.Interfaces.IPdf;
 using DocuMind.Core.Interfaces.IRepo;
+using DocuMind.Core.Interfaces.IVectorDb;
 using DocuMind.Infrastructure.Data;
 using DocuMind.Infrastructure.Repositories;
 using DocuMind.Infrastructure.Services;
@@ -62,6 +63,9 @@ namespace DocuMind.Infrastructure.Extention
 
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+
+            // Vector DB Service
+            services.AddScoped<IVectorDbService,QdrantService>();
             return services;
         }
     }
