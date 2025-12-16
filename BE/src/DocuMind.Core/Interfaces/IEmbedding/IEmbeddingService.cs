@@ -9,6 +9,6 @@ namespace DocuMind.Core.Interfaces.IEmbedding
     public interface IEmbeddingService
     {
         Task<float[]> EmbedChunkAsync(string chunk, CancellationToken ct = default);
-         Task<IReadOnlyList<float[]>> EmbedChunksAsync(IReadOnlyList<string> chunks, CancellationToken ct = default);
+         Task<List<float[]>> EmbedChunksAsync(IReadOnlyList<string> chunks, CancellationToken ct = default);
     }
 }

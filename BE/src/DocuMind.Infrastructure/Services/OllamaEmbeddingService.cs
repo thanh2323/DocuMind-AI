@@ -41,10 +41,10 @@ public class OllamaEmbeddingService : IEmbeddingService
     }
 
     // ========== MANY CHUNKS (SEQUENTIAL) ==========
-    public async Task<IReadOnlyList<float[]>> EmbedChunksAsync(IReadOnlyList<string> chunks,CancellationToken ct = default)
+    public async Task<List<float[]>> EmbedChunksAsync(IReadOnlyList<string> chunks,CancellationToken ct = default)
     {
         if (chunks == null || chunks.Count == 0)
-            return Array.Empty<float[]>();
+            return new List<float[]>();
 
         var allEmbeddings = new List<float[]>(chunks.Count);
 

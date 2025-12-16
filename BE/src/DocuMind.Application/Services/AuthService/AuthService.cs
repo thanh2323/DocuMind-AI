@@ -76,7 +76,7 @@ namespace DocuMind.Application.Services.AuthService
             
 
             await userRepository.AddAsync(user);
-            await userRepository.SaveChangesAsync(user);
+            await userRepository.SaveChangesAsync();
 
             var token = _jwtService.GenerateToken(user);
 
@@ -115,7 +115,7 @@ namespace DocuMind.Application.Services.AuthService
 
            
             await userRepository.UpdateAsync(user);
-            await userRepository.SaveChangesAsync(user);
+            await userRepository.SaveChangesAsync();
 
             var token = _jwtService.GenerateToken(user);
 
