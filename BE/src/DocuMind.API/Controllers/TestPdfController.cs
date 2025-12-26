@@ -107,7 +107,7 @@ public class TestPdfController : ControllerBase
         return Ok($"Đã xóa vector của docId {docId}");
     }
 
-    [HttpPost("upload")]
+  /*  [HttpPost("upload")]
     public async Task<IActionResult> UploadDocument([FromForm] UploadDocumentDto dto)
     {
         int userId = 1;
@@ -118,7 +118,7 @@ public class TestPdfController : ControllerBase
             return BadRequest(result.Message);
 
         return Ok(result.Data);
-    }
+    }*/
     [HttpPost("ask")]
     public async Task<IActionResult> Ask([FromBody] PromptDto request, CancellationToken ct)
     {

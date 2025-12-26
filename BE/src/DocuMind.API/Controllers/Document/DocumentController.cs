@@ -21,12 +21,12 @@ namespace DocuMind.API.Controllers.Document
         {
             _documentService = documentService;
         }
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadDocument([FromForm] UploadDocumentDto dto)
+        [HttpPost("sessions/{sessionId}/upload")]
+        public async Task<IActionResult> UploadDocument(int sessionId, [FromForm] UploadDocumentDto dto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-          
-            var result = await _documentService.UploadDocument(dto, int.Parse(userId!));
+
+            var result = await _documentService.UploadDocument(int.Parse(userId!), sessionId, dto);
 
             if (!result.Success)
                 return BadRequest(ApiResponse<DocumentItemDto>.ErrorResponse(result.Message));
