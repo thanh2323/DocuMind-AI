@@ -53,5 +53,40 @@ namespace DocuMind.API.Controllers.Chat
                 ApiResponse<ChatResponseDto>.SuccessResponse(result.Data!));
         }
 
+        [HttpGet("sessions")]
+        public async Task<IActionResult> GetSessions()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _chatService.GetSessionsAsync(int.Parse(userId!));
+
+            if (!result.Success)
+                return BadRequest(ApiResponse<List<SessionDto>>.ErrorResponse(result.Message));
+
+            return Ok(ApiResponse<List<SessionDto>>.SuccessResponse(result.Data!, result.Message));
+        }
+
+        [HttpGet("sessions/{sessionId}")]
+        public async Task<IActionResult> GetSession(int sessionId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _chatService.GetSessionAsync(int.Parse(userId!), sessionId);
+
+            if (!result.Success)
+                return BadRequest(ApiResponse<SessionDto>.ErrorResponse(result.Message));
+
+            return Ok(ApiResponse<SessionDto>.SuccessResponse(result.Data!, result.Message));
+        }
+        [HttpGet("sessions/{sessionId}/messages")]
+        public async Task<IActionResult> GetMessages(int sessionId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _chatService.GetMessagesAsync(int.Parse(userId!), sessionId);
+
+            if (!result.Success)
+                return BadRequest(ApiResponse<List<MessageDto>>.ErrorResponse(result.Message));
+
+            return Ok(ApiResponse<List<MessageDto>>.SuccessResponse(result.Data!, result.Message));
+        }
+
     }
 }

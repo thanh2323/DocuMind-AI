@@ -1,13 +1,17 @@
 ﻿
 using System.Net.Http.Headers;
+using DocuMind.Application.Factories;
 using DocuMind.Application.Interface.IAuth;
 using DocuMind.Application.Interface.IChat;
 using DocuMind.Application.Interface.IDocument;
+using DocuMind.Application.Interface.IIntentClassifier;
+using DocuMind.Application.Interface.IPrompt;
 using DocuMind.Application.Interface.IRag;
 using DocuMind.Application.Interface.IUser;
 using DocuMind.Application.Services.AuthService;
 using DocuMind.Application.Services.ChatService;
 using DocuMind.Application.Services.DocumentService;
+using DocuMind.Application.Services.IntentClassifier;
 using DocuMind.Application.Services.Rag;
 using DocuMind.Application.Services.UserService;
 using DocuMind.Core.Interfaces.IAuth;
@@ -103,6 +107,8 @@ namespace DocuMind.Infrastructure.Extention
             services.AddScoped<ILlmService, GeminiLlmService>();
             // RAG Service
             services.AddScoped<IRagService, RagService>();
+            services.AddScoped<IIntentClassifierService, IntentClassifierService>();
+            services.AddScoped<IPromptFactory, PromptFactory>();
 
             // Document Service
             services.AddScoped<IDocumentService, DocumentService>();
