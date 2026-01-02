@@ -7,7 +7,7 @@ using DocuMind.Application.Interface.IUser;
 namespace DocuMind.API.Controllers.User
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/user")]
     public class DashBoardController : Controller
     {
         private readonly IUserDashboardService _dashboardService;

@@ -8,6 +8,7 @@ using DocuMind.Core.Enum;
 using DocuMind.Core.Interfaces.IEmbedding;
 using DocuMind.Core.Interfaces.IPdf;
 using DocuMind.Core.Interfaces.IRepo;
+using DocuMind.Core.Interfaces.IStorage;
 using DocuMind.Core.Interfaces.IVectorDb;
 using Microsoft.Extensions.Logging;
 
@@ -20,10 +21,12 @@ namespace DocuMind.Infrastructure.Services
         private readonly IEmbeddingService _embeddingService;
         private readonly IVectorDbService _vectorDb;
         private readonly ILogger<DocumentJob> _logger;
+        private readonly IStorageService _storageService;
 
 
-        public DocumentJob(IDocumentRepository documentRepository ,IPdfProcessorService pdfProcessor, IEmbeddingService embeddingService, IVectorDbService vectorDb, ILogger<DocumentJob> logger)
+        public DocumentJob(IStorageService storageService, IDocumentRepository documentRepository ,IPdfProcessorService pdfProcessor, IEmbeddingService embeddingService, IVectorDbService vectorDb, ILogger<DocumentJob> logger)
         {
+            _storageService = storageService;
             _documentRepository = documentRepository;
             _pdfProcessor = pdfProcessor;
             _embeddingService = embeddingService;
@@ -56,18 +59,13 @@ namespace DocuMind.Infrastructure.Services
 
                 _logger.LogInformation("📄 Processing document: {FileName}", document.FileName);
 
-                // Step 2: Validate PDF
-                _logger.LogInformation("🔍 Validating PDF...");
-                var isValid = _pdfProcessor.ValidatePdf(document.FilePath);
-                if (!isValid)
-                {
-                    await MarkAsError(document, "Invalid or corrupted PDF file");
-                    return;
-                }
-
                 // Step 3: Extract and clean text from PDF
+                _logger.LogInformation("📥 Downloading PDF from storage cloud...");
+                // Download PDF file stream from storage
+                var pdfStream = await _storageService.GetFileStreamAsync(document.FilePath);
+
                 _logger.LogInformation("📖 Extracting and cleaning text from PDF...");
-                var cleanText = _pdfProcessor.ExtractCleanText(document.FilePath);
+                var cleanText = _pdfProcessor.ExtractCleanText(pdfStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 if (string.IsNullOrWhiteSpace(cleanText))

@@ -22,13 +22,13 @@ namespace DocuMind.Infrastructure.Services
             _logger = logger;
         }
 
-        public string ExtractText(string filePath, CancellationToken cancellationToken = default)
+        public string ExtractText(Stream pdfStream, CancellationToken cancellationToken = default)
         {
             try
             {
                 var textBuilder = new StringBuilder();
 
-                using var reader = new PdfReader(filePath);
+                using var reader = new PdfReader(pdfStream);
                 using var pdfDoc = new PdfDocument(reader);
 
                 var totalPages = pdfDoc.GetNumberOfPages();
@@ -60,14 +60,14 @@ namespace DocuMind.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error extracting text from PDF: {FilePath}", filePath);
+                _logger.LogError(ex, "Error extracting text from PDF: {pdfStream}", pdfStream);
                 throw;
             }
         }
 
-        public string ExtractCleanText(string filePath)
+        public string ExtractCleanText(Stream pdfStream)
         {
-            var raw = ExtractText(filePath);
+            var raw = ExtractText(pdfStream);
 
             // 1. Normalize newline
             raw = Regex.Replace(raw, @"\r\n|\r", "\n");
@@ -201,49 +201,6 @@ namespace DocuMind.Infrastructure.Services
             return chunks;
         }
 
-        public bool ValidatePdf(string filePath)
-        {
-            try
-            {
-                // 1. File existence
-                if (!File.Exists(filePath))
-                {
-                    _logger.LogWarning("PDF file not found: {FilePath}", filePath);
-                    return false;
-                }
-
-                // 2. Size limit (50MB)
-                var fileInfo = new FileInfo(filePath);
-                if (fileInfo.Length > 50 * 1024 * 1024)
-                {
-                    _logger.LogWarning("PDF too large: {Size}", fileInfo.Length);
-                    return false;
-                }
-
-                // 3. Deep validation
-                using var reader = new PdfReader(filePath);
-                using var pdfDoc = new PdfDocument(reader);
-
-                if (reader.IsEncrypted())
-                {
-                    _logger.LogWarning("PDF encrypted: {FilePath}", filePath);
-                    return false;
-                }
-
-                var pages = pdfDoc.GetNumberOfPages();
-                if (pages <= 0)
-                {
-                    _logger.LogWarning("PDF has no pages: {FilePath}", filePath);
-                    return false;
-                }
-
-                return true;
-            }
-            catch
-            {
-                _logger.LogWarning("PDF validation failed: {FilePath}", filePath);
-                return false;
-            }
-        }
+ 
     }
 }

@@ -12,6 +12,6 @@ namespace DocuMind.Application.DTOs.User.Dashboard
     {
         public required UserDashboardStatisticsDto Statistics { get; set; } 
         public IEnumerable<DocumentItemDto> RecentDocuments { get; set; } = Enumerable.Empty<DocumentItemDto>();
-        public IEnumerable<ChatItemDto> RecentChats { get; set; } = Enumerable.Empty<ChatItemDto>();
+        public IEnumerable<SessionDto> RecentChats { get; set; } = Enumerable.Empty<SessionDto>();
     }
 }

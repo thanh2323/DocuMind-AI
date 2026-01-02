@@ -8,9 +8,9 @@ namespace DocuMind.Core.Interfaces.IPdf
 {
     public interface IPdfProcessorService
     {
-        string ExtractText(string filePath, CancellationToken cancellationToken = default);
-        string ExtractCleanText(string filePath);
+        string ExtractText(Stream pdfStream, CancellationToken cancellationToken = default);
+        string ExtractCleanText(Stream pdfStream);
         List<string> ChunkSemantic(string text, int chunkSize, int overlap );
-        bool ValidatePdf(string filePath);
+
     }
 }

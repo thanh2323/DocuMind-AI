@@ -60,5 +60,12 @@ namespace DocuMind.Infrastructure.Repositories
             .ToListAsync();
 
         }
+
+        public async Task<List<Document>> GetDocumentsAsync(List<int> ids, int userId)
+        {
+            return await _context.Documents
+                .Where(d => ids.Contains(d.Id) && d.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

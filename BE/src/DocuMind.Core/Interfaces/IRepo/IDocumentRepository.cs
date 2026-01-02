@@ -11,6 +11,8 @@ namespace DocuMind.Core.Interfaces.IRepo
 {
    public interface IDocumentRepository : IRepository<Document>
     {
+        Task<List<Document>> GetDocumentsAsync(List<int> documentIds, int userId);
+
         Task<IEnumerable<Document>> GetPagedUserDocumentsAsync(int userId, int page, int pageSize);
         Task<int> CountUserDocumentsAsync(int userId);
         Task<IEnumerable<Document>> GetRecentDocumentsAsync(int userId, int take);
