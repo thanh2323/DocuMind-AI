@@ -74,22 +74,19 @@ namespace DocuMind.Application.Services.AdminService
         {
             try
             {
-                var users = await _userRepository.GetAllAsync();
-                
-                // Note: counting docs/chats for EACH user might be N+1 lazy loading issue if not handled.
-                // ideally, we should use a projection query.
-                // For now, this is "Ok" for small user base. For scale, need optimized query.
-                
-                var userDtos = users.Select(u => new UserAdminDto
+
+                var usersWithStats = await _userRepository.GetUsersWithStatsAsync();
+
+                var userDtos = usersWithStats.Select(item => new UserAdminDto
                 {
-                    Id = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Role = u.Role,
-                    IsLocked = u.IsLocked,
-                    CreatedAt = u.CreatedAt,
-                    DocumentCount = u.Documents?.Count ?? 0,
-                    ChatCount = u.ChatSessions?.Count ?? 0
+                    Id = item.User.Id,
+                    FullName = item.User.FullName,
+                    Email = item.User.Email,
+                    Role = item.User.Role,
+                    IsLocked = item.User.IsLocked,
+                    CreatedAt = item.User.CreatedAt,
+                    DocumentCount = item.DocumentCount,
+                    ChatCount = item.ChatCount
                 }).ToList();
 
                 return ServiceResult<List<UserAdminDto>>.Ok(userDtos);
@@ -99,8 +96,8 @@ namespace DocuMind.Application.Services.AdminService
                 _logger.LogError(ex, "Error fetching users");
                 return ServiceResult<List<UserAdminDto>>.Fail("Error fetching users");
             }
-        }
 
+        }
         public async Task<ServiceResult<AdminDashboardStatsDto>> GetDashboardStats()
         {
            try
