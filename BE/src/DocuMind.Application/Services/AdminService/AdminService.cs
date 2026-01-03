@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DocuMind.Application.DTOs.Admin;
 using DocuMind.Application.DTOs.Common;
-using DocuMind.Application.Interface.IUser;
+using DocuMind.Application.Interface.IAdmin;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Core.Interfaces.IStorage;
 using Microsoft.Extensions.Logging;

@@ -1,8 +1,8 @@
-using DocuMind.Application.Interface.IUser;
 using DocuMind.Application.DTOs.Admin;
 using DocuMind.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DocuMind.Application.Interface.IAdmin;
 
 namespace DocuMind.API.Controllers.Admin
 {

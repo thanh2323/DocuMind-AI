@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DocuMind.Application.DTOs.Admin;
 using DocuMind.Application.DTOs.Common;
 
-namespace DocuMind.Application.Interface.IUser
+namespace DocuMind.Application.Interface.IAdmin
 {
     public interface IAdminService
     {

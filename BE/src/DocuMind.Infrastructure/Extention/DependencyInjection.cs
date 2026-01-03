@@ -1,6 +1,7 @@
 ﻿
 using System.Net.Http.Headers;
 using DocuMind.Application.Factories;
+using DocuMind.Application.Interface.IAdmin;
 using DocuMind.Application.Interface.IAuth;
 using DocuMind.Application.Interface.IChat;
 using DocuMind.Application.Interface.IDocument;
