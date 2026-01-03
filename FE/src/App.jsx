@@ -4,6 +4,7 @@ import SignUpPage from './pages/SignUp';
 import DashboardPage from './pages/Dashboard';
 import ChatPage from './pages/Chat';
 import ChatListPage from './pages/ChatList';
+import AdminDashboard from './pages/AdminDashboard';
 import MainLayout from './layouts/MainLayout';
 //import ProtectedRoute from './components/ProtectedRoute'; // Assuming we have this, or for now just layout
 
