@@ -21,7 +21,7 @@ using DocuMind.Core.Interfaces.IVectorDb;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace DocuMind.Application.Services.Rag
+namespace DocuMind.Application.Services.RagService
 {
     public class RagService : IRagService
     {

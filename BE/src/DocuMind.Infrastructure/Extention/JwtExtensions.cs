@@ -19,8 +19,7 @@ namespace DocuMind.Infrastructure.Extention
 
             var jwtSettings = configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
+            // Dictionary mapping removed to use default behavior
 
             services.AddAuthentication(options =>
             {
@@ -39,6 +38,7 @@ namespace DocuMind.Infrastructure.Extention
                     ValidAudience = jwtSettings["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                     ClockSkew = TimeSpan.Zero
+                    // Removed RoleClaimType to use default ClaimTypes.Role
                 };
             });
 
