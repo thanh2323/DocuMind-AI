@@ -4,6 +4,7 @@ import SignUpPage from './pages/SignUp';
 import DashboardPage from './pages/Dashboard';
 import ChatPage from './pages/Chat';
 import ChatListPage from './pages/ChatList';
+import AdminDashboard from './pages/AdminDashboard';
 import MainLayout from './layouts/MainLayout';
 //import ProtectedRoute from './components/ProtectedRoute'; // Assuming we have this, or for now just layout
 
@@ -21,6 +22,9 @@ function App() {
           <Route path="/chat" element={<ChatListPage />} /> {/* Entry is Library */}
           <Route path="/chat/create" element={<ChatPage />} /> {/* New Session Config */}
           <Route path="/chat/:sessionId" element={<ChatPage />} /> {/* Active Session */}
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

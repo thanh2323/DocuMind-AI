@@ -10,11 +10,30 @@ const MainLayout = () => {
         setIsSidebarOpen(false);
     }, [location]);
 
+    // Check for Admin Role
+    const token = localStorage.getItem("token");
+    let isAdmin = false;
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            // Check for standard role claim (http://schemas.microsoft.com/ws/2008/06/identity/claims/role) 
+            // OR simple "role" claim depending on what the backend sends now.
+            // Backend was recently switched to ClaimTypes.Role, which usually maps to the long schema URL.
+            const role = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || payload["role"];
+            isAdmin = role === "Admin";
+        } catch (e) {
+            console.error("Error parsing token", e);
+        }
+    }
+
     const navItems = [
         { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
         { path: '/library', label: 'My Library', icon: 'library_books' },
-        // { path: '/chat', label: 'Recent Chat', icon: 'chat_bubble' }, // Optional
     ];
+
+    if (isAdmin) {
+        navItems.push({ path: '/admin', label: 'Admin Panel', icon: 'admin_panel_settings' });
+    }
 
     return (
         <div className="flex h-screen bg-[#f8f9fa] dark:bg-background-dark text-text-light dark:text-text-dark font-display overflow-hidden relative">
