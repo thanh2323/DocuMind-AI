@@ -8,11 +8,12 @@ using DocuMind.Application.Interface.IIntentClassifier;
 using DocuMind.Application.Interface.IPrompt;
 using DocuMind.Application.Interface.IRag;
 using DocuMind.Application.Interface.IUser;
+using DocuMind.Application.Services.AdminService;
 using DocuMind.Application.Services.AuthService;
 using DocuMind.Application.Services.ChatService;
 using DocuMind.Application.Services.DocumentService;
 using DocuMind.Application.Services.IntentClassifier;
-using DocuMind.Application.Services.Rag;
+using DocuMind.Application.Services.RagService;
 using DocuMind.Application.Services.UserService;
 using DocuMind.Core.Interfaces.IAuth;
 using DocuMind.Core.Interfaces.IBackgroundJob;
@@ -60,6 +61,7 @@ namespace DocuMind.Infrastructure.Extention
             //User Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserDashboardService, DashBoardService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             //Background Job Services   
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();

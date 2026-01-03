@@ -8,11 +8,14 @@ using DocuMind.Application.Interface.IChat;
 using DocuMind.Application.Interface.IDocument;
 using DocuMind.Application.Interface.IRag;
 using DocuMind.Core.Interfaces.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocuMind.API.Controllers.Chat
 {
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     public class ChatController : Controller
     {
         private readonly IRagService _ragService;

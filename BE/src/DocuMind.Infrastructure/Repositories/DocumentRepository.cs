@@ -18,6 +18,11 @@ namespace DocuMind.Infrastructure.Repositories
         {
         }
 
+      /*  public async Task<List<Document>> GetAllUserDocumentsAsync(int userId)
+        {
+            return await _dbSet.Where(d => d.UserId == userId).ToListAsync();
+        }*/
+
         public async Task<IEnumerable<Document>> GetByStatusAsync(DocumentStatus status)
         {
             return await _context.Documents

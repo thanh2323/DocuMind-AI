@@ -19,5 +19,6 @@ namespace DocuMind.Core.Interfaces.IRepo
 
         Task<IEnumerable<Document>> GetByStatusAsync(DocumentStatus status);
         Task<Dictionary<DocumentStatus, int>> GetStatusCountsAsync(int userId);
+     /*   Task<List<Document>> GetAllUserDocumentsAsync(int userId);*/
     }
 }
