@@ -35,6 +35,12 @@ const MainLayout = () => {
         navItems.push({ path: '/admin', label: 'Admin Panel', icon: 'admin_panel_settings' });
     }
 
+    const navItems = [
+        { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+        { path: '/library', label: 'My Library', icon: 'library_books' },
+        // { path: '/chat', label: 'Recent Chat', icon: 'chat_bubble' }, // Optional
+    ];
+
     return (
         <div className="flex h-screen bg-[#f8f9fa] dark:bg-background-dark text-text-light dark:text-text-dark font-display overflow-hidden relative">
 

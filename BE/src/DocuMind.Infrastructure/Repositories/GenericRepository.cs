@@ -46,7 +46,7 @@ namespace DocuMind.Infrastructure.Repositories
             _dbSet.Update(entity);
             return entity;
         }
-        public async Task SaveChangesAsync(T entity)
+        public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }

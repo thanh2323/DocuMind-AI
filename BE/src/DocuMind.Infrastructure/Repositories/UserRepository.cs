@@ -26,5 +26,19 @@ namespace DocuMind.Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
+
+        public async Task<List<(User User, int DocumentCount, int ChatCount)>> GetUsersWithStatsAsync()
+        {
+            var result = await _context.Users
+                .Select(u => new 
+                { 
+                    User = u, 
+                    DocCount = u.Documents.Count(), 
+                    ChatCount = u.ChatSessions.Count() 
+                })
+                .ToListAsync();
+
+            return result.Select(x => (x.User, x.DocCount, x.ChatCount)).ToList();
+        }
     }
 }

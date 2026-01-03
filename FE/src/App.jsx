@@ -22,9 +22,6 @@ function App() {
           <Route path="/chat" element={<ChatListPage />} /> {/* Entry is Library */}
           <Route path="/chat/create" element={<ChatPage />} /> {/* New Session Config */}
           <Route path="/chat/:sessionId" element={<ChatPage />} /> {/* Active Session */}
-
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

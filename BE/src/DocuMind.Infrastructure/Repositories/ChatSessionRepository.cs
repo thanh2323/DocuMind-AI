@@ -22,9 +22,11 @@ namespace DocuMind.Infrastructure.Repositories
         public async Task<ChatSession?> GetWithDocumentsAsync(int sessionId)
         {
             return await _context.ChatSessions
+                .AsNoTracking()
                 .Include(cs => cs.SessionDocuments)
-                .ThenInclude(sd => sd.Document)
+                    .ThenInclude(sd => sd.Document)
                 .FirstOrDefaultAsync(cs => cs.Id == sessionId);
+
         }
 
         public async Task<ChatSession?> GetWithRecentMessagesAsync(int sessionId, int count)

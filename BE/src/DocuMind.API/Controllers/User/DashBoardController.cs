@@ -3,11 +3,13 @@ using DocuMind.Application.DTOs.User.Dashboard;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using DocuMind.Application.Interface.IUser;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DocuMind.API.Controllers.User
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("api/user")]
     public class DashBoardController : Controller
     {
         private readonly IUserDashboardService _dashboardService;

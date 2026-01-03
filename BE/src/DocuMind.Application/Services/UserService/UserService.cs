@@ -78,7 +78,7 @@ namespace DocuMind.Application.Services.UserService
             // Update fields
             user.FullName = dto.FullName ?? user.FullName;
             await _userRepository.UpdateAsync(user);
-            await _userRepository.SaveChangesAsync(user);
+            await _userRepository.SaveChangesAsync();
 
             // Prepare profile DTO 
             var returnDto = new UserProfileDto
