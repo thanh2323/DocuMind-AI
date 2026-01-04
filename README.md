@@ -100,67 +100,56 @@ The solution is divided into four main projects:
 
 The system uses **SQL Server** with a relational schema optimized for efficient retrieval and integrity.
 
-```mermaid
-erDiagram
-    USERS ||--o{ DOCUMENTS : owns
-    USERS ||--o{ CHAT_SESSIONS : creates
-    CHAT_SESSIONS ||--o{ CHAT_MESSAGES : contains
-    CHAT_SESSIONS ||--o{ SESSION_DOCUMENTS : includes
-    DOCUMENTS ||--o{ SESSION_DOCUMENTS : linked_to
+### 1. Users table
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `Id` | `int` | **PK**. Unique identifier for the user. |
+| `FullName` | `nvarchar(max)` | User's full name. |
+| `Email` | `nvarchar(max)` | User's email address (used for login). |
+| `PasswordHash` | `nvarchar(max)` | Hashed password (BCrypt). |
+| `Role` | `nvarchar(max)` | User role (`Admin` or `User`). |
+| `IsLocked` | `bit` | Account status (Locked/Active). |
+| `CreatedAt` | `datetime2` | Account creation timestamp. |
 
-    USERS {
-        int Id PK
-        string FullName
-        string Email
-        string PasswordHash
-        string Role
-        bool IsLocked
-        datetime CreatedAt
-    }
+### 2. Documents Table
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `Id` | `int` | **PK**. Unique identifier for the document. |
+| `UserId` | `int` | **FK**. Owner of the document. |
+| `FileName` | `nvarchar(max)` | Original name of the uploaded file. |
+| `FileSize` | `bigint` | Size of the file in bytes. |
+| `FilePath` | `nvarchar(max)` | Path to the file in Supabase storage. |
+| `Summary` | `nvarchar(max)` | AI-generated summary of the document. |
+| `Status` | `int` | Processing status (0:Pending, 1:Ready, 2:Error). |
+| `CreatedAt` | `datetime2` | Upload timestamp. |
+| `ProcessedAt` | `datetime2` | Completion timestamp of AI processing. |
 
-    DOCUMENTS {
-        int Id PK
-        int UserId FK
-        string FileName
-        string FilePath
-        long FileSize
-        string Summary
-        string Status
-        datetime CreatedAt
-        datetime ProcessedAt
-    }
+### 3. ChatSessions Table
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `Id` | `int` | **PK**. Unique identifier for the chat session. |
+| `UserId` | `int` | **FK**. User who created the session. |
+| `Title` | `nvarchar(max)` | Title of the chat session (auto-generated or user-defined). |
+| `CreatedAt` | `datetime2` | Session creation timestamp. |
+| `LastActiveAt` | `datetime2` | Timestamp of the last message in the session. |
 
-    CHAT_SESSIONS {
-        int Id PK
-        int UserId FK
-        string Title
-        datetime CreatedAt
-        datetime LastActiveAt
-    }
+### 4. ChatMessages Table
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `Id` | `int` | **PK**. Unique identifier for the message. |
+| `SessionId` | `int` | **FK**. The session this message belongs to. |
+| `Content` | `nvarchar(max)` | The actual text content of the message. |
+| `IsUser` | `bit` | `true` if sent by user, `false` if sent by AI. |
+| `Timestamp` | `datetime2` | Time the message was sent. |
+| `TokenCount` | `int` | Estimated token usage for this message. |
 
-    CHAT_MESSAGES {
-        int Id PK
-        int SessionId FK
-        string Content
-        bool IsUser
-        int TokenCount
-        datetime Timestamp
-    }
+### 5. SessionDocuments Table
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `SessionId` | `int` | **PK, FK**. Composite key linking to ChatSession. |
+| `DocumentId` | `int` | **PK, FK**. Composite key linking to Document. |
+| `AddedAt` | `datetime2` | Timestamp when the document was added to the context. |
 
-    SESSION_DOCUMENTS {
-        int SessionId PK,FK
-        int DocumentId PK,FK
-        datetime AddedAt
-    }
-```
-
-### Key Entities
-
-*   **Users**: Stores user credentials, roles (Admin/User), and status.
-*   **Documents**: Tracks uploaded files, their processing status (Pending/Ready/Error), and generated summaries.
-*   **ChatSessions**: Manages conversation history and metadata.
-*   **ChatMessages**: Stores individual messages exchanged between the user and the AI.
-*   **SessionDocuments**: A many-to-many link table connecting Chat Sessions with specific Documents, allowing context-aware chats.
 
 ## API Documentation
 
@@ -312,14 +301,75 @@ Open your browser and navigate to the URL shown in the terminal (usually `http:/
 ## Development Guide
 
 
-### 📂 Key Directory Structure
+### 📂 Project Structure
 
-*   `BE/src/DocuMind.Core`: **Domain Entities & Interfaces**. The heart of the application.
-*   `BE/src/DocuMind.Application`: **Business Logic**. Services, DTOs, and Validators.
-*   `BE/src/DocuMind.Infrastructure`: **Implementation**. EF Core, Hangfire, and External Services.
-*   `BE/src/DocuMind.API`: **Entry Point**. Controllers and Middleware.
-*   `FE/src/pages`: React Page Components (Admin, Chat, Dashboard).
-*   `FE/src/services`: API Integration logic (Axios).
+```bash
+DocuMind/
+├── BE/                                     # Backend (.NET 9)
+│   ├── src/
+│   │   ├── DocuMind.API/                   # Presentation Layer
+│   │   │   ├── Controllers/
+│   │   │   │   ├── Admin/                  # AdminController.cs
+│   │   │   │   ├── Auth/                   # AuthController.cs
+│   │   │   │   ├── Chat/                   # ChatController.cs
+│   │   │   │   ├── Document/               # DocumentController.cs
+│   │   │   │   └── User/                   # UserController.cs
+│   │   │   ├── Extensions/                 # Service Configuration
+│   │   │   │   ├── CORSConfiguration.cs
+│   │   │   │   ├── DependencyInjection.cs  # Unified DI Setup
+│   │   │   │   ├── HangfireConfiguration.cs
+│   │   │   │   └── JwtExtensions.cs
+│   │   │   ├── Middleware/                 # Custom Middleware
+│   │   │   │   └── HangfireDashboardMiddleware.cs
+│   │   │   ├── appsettings.json            # Configuration
+│   │   │   └── Program.cs                  # Entry Point
+│   │   │
+│   │   ├── DocuMind.Application/           # Application Layer
+│   │   │   ├── DTOs/                       # Data Transfer Objects
+│   │   │   ├── Interface/                  # Service Interfaces
+│   │   │   └── Services/                   # Business Logic
+│   │   │       ├── ChatService/
+│   │   │       ├── RagService/
+│   │   │       ├── IntentClassifier/
+│   │   │       └── ...
+│   │   │
+│   │   ├── DocuMind.Core/                  # Domain Layer
+│   │   │   ├── Entities/                   # DB Models
+│   │   │   ├── Enum/                       # DocumentStatus, IntentType
+│   │   │   └── Interfaces/                 # Data Contracts
+│   │   │
+│   │   └── DocuMind.Infrastructure/        # Infrastructure Layer
+│   │       ├── Data/                       # Database Context
+│   │       │   ├── DatabaseSeeder.cs       # Initial Data Seeding
+│   │       │   └── SqlServerContext.cs     # EF Core Context
+│   │       ├── Migrations/                 # Database Migrations
+│   │       ├── Repositories/               # Repository Implementation
+│   │       └── Services/                   # External Services
+│   │           ├── GeminiLlmService.cs
+│   │           ├── OllamaEmbeddingService.cs
+│   │           ├── QdrantService.cs
+│   │           ├── SupabaseStorageService.cs
+│   │           └── PdfProcessorService.cs
+│   │
+│   
+│
+└── FE/                                     # Frontend (React)
+    ├── src/
+    │   ├── components/                     # Shared UI
+    │   │   └── Toast.jsx                   # Notification Component
+    │   ├── layouts/                        # Page Layouts (MainLayout)
+    │   ├── pages/                          # Views
+    │   │   ├── AdminDashboard.jsx          # Admin Control Panel
+    │   │   ├── Chat.jsx                    # Chat Interface
+    │   │   ├── Dashboard.jsx               # User Home
+    │   │   └── Login/SignUp.jsx            # Auth Pages
+    │   ├── services/                       # API Proxies
+    │   │   ├── api.js                      # Axios Instance + Interceptors
+    │   │   ├── auth.service.js
+    │   │   └── chat.service.js
+    │   └── App.jsx                         # Router Configuration
+```
+
 
 ### 🐛 Common Issues & Fixes
 
