@@ -142,6 +142,7 @@ The system uses **SQL Server** with a relational schema optimized for efficient 
 | `IsUser` | `bit` | `true` if sent by user, `false` if sent by AI. |
 | `Timestamp` | `datetime2` | Time the message was sent. |
 | `TokenCount` | `int` | Estimated token usage for this message. |
+<<<<<<< HEAD
 
 ### 5. SessionDocuments Table
 | Column Name | Data Type | Description |
@@ -150,6 +151,25 @@ The system uses **SQL Server** with a relational schema optimized for efficient 
 | `DocumentId` | `int` | **PK, FK**. Composite key linking to Document. |
 | `AddedAt` | `datetime2` | Timestamp when the document was added to the context. |
 
+=======
+
+### 5. SessionDocuments Table
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `SessionId` | `int` | **PK, FK**. Composite key linking to ChatSession. |
+| `DocumentId` | `int` | **PK, FK**. Composite key linking to Document. |
+| `AddedAt` | `datetime2` | Timestamp when the document was added to the context. |
+
+
+
+### Key Entities
+
+*   **Users**: Stores user credentials, roles (Admin/User), and status.
+*   **Documents**: Tracks uploaded files, their processing status (Pending/Ready/Error), and generated summaries.
+*   **ChatSessions**: Manages conversation history and metadata.
+*   **ChatMessages**: Stores individual messages exchanged between the user and the AI.
+*   **SessionDocuments**: A many-to-many link table connecting Chat Sessions with specific Documents, allowing context-aware chats.
+>>>>>>> d8f2b0d4bcbd119b1c6f81cc1f28c81f743b68f4
 
 ## API Documentation
 
@@ -379,6 +399,7 @@ DocuMind/
 
 ---
 Start building with **DocuMind** today! 🚀
+
 
 
 
