@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DocuMind.Application.DTOs.Chat
 {
-    public class ChatItemDto
+    public class MessageDto
     {
         public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public DateTime LastActiveAt { get; set; }
+        public string Content { get; set; } = string.Empty;
+        public bool IsUser { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

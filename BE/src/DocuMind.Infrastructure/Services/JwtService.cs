@@ -35,12 +35,12 @@ namespace DocuMind.Infrastructure.Services
 
             // Create claims
 
-            var claims = new List<Claim>
+            var claims = new List<Claim>()
             {
-                new Claim("sub", user.Id.ToString()),
-                new Claim("email", user.Email),
-                new Claim("name", user.FullName),
-                new Claim("role", user.Role),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Name, user.FullName),
+                new Claim(ClaimTypes.Role, user.Role), //  Standard Microsoft Claim Type
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

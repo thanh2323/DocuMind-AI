@@ -11,5 +11,6 @@ namespace DocuMind.Core.Interfaces.IRepo
     {
         Task<User?> GetByEmailAsync(string email);
         Task<bool> EmailExistsAsync(string email);
+        Task<List<(User User, int DocumentCount, int ChatCount)>> GetUsersWithStatsAsync();
     }
 }
