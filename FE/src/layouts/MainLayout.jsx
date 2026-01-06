@@ -29,7 +29,7 @@ const MainLayout = () => {
     const navItems = [
         { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
         { path: '/library', label: 'My Library', icon: 'library_books' },
-    ];
+        { path: '/chat', label: 'Recent Chat', icon: 'chat_bubble' },];
 
     if (isAdmin) {
         navItems.push({ path: '/admin', label: 'Admin Panel', icon: 'admin_panel_settings' });
