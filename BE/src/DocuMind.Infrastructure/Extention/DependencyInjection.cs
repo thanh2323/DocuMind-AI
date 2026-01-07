@@ -70,21 +70,33 @@ namespace DocuMind.Infrastructure.Extention
             // PDF Pre-Processor Service
             services.AddScoped<IPdfProcessorService, PdfProcessorService>();
 
-            // Embedding Service With Model Loaded from Ollama
-            services.AddScoped<IEmbeddingService, OllamaEmbeddingService>();
+            /*  // Embedding Service With Model Loaded from Ollama
+              services.AddScoped<IEmbeddingService, OllamaEmbeddingService>();
 
-            // Configure HttpClient for Ollama
-            services.AddHttpClient("Ollama", client =>
+              // Configure HttpClient for Ollama
+              services.AddHttpClient("Ollama", client =>
+              {
+                  client.BaseAddress = new Uri(configuration["Ollama:BaseUrl"]!);
+                  client.Timeout = TimeSpan.FromSeconds(int.TryParse(configuration["Ollama:TimeoutSeconds"], out var timeout) ? timeout : 60);
+
+                  client.DefaultRequestHeaders.Add("Accept", "application/json");
+              });*/
+
+            // Embedding Service With Model Loaded from Gemini
+            services.AddScoped<IEmbeddingService, GeminiEmbeddingService>();
+            // Configure HttpClient for Gemini Embedding and LLM
+            services.AddHttpClient("Gemini", client =>
             {
-                client.BaseAddress = new Uri(configuration["Ollama:BaseUrl"]!);
-                client.Timeout = TimeSpan.FromSeconds(int.TryParse(configuration["Ollama:TimeoutSeconds"], out var timeout) ? timeout : 60);
-
+                client.BaseAddress =
+                    new Uri(configuration["Gemini:BaseUrl"]!);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
+            // LLM Service
+            services.AddScoped<ILlmService, GeminiLlmService>();
 
-        
-            
+
+
             // Vector DB Service
             services.AddScoped<IVectorDbService,QdrantService>();
 
@@ -106,8 +118,7 @@ namespace DocuMind.Infrastructure.Extention
                         AutoConnectRealtime = false
                     });
             });
-            // LLM Service
-            services.AddScoped<ILlmService, GeminiLlmService>();
+            
             // RAG Service
             services.AddScoped<IRagService, RagService>();
             services.AddScoped<IIntentClassifierService, IntentClassifierService>();

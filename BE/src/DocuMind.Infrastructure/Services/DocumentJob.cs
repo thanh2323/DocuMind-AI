@@ -78,7 +78,7 @@ namespace DocuMind.Infrastructure.Services
 
                 // Step 4: hybrid Semantic chunking (paragraph + sentence + Structure)
                 _logger.LogInformation("✂️ Performing semantic chunking...");
-                var chunks = _pdfProcessor.ChunkSemantic(cleanText, chunkSize: 500, overlap: 50);
+                var chunks = _pdfProcessor.ChunkSemantic(cleanText, chunkSize: 2000, overlap: 50);
 
                 if (chunks.Count == 0)
                 {

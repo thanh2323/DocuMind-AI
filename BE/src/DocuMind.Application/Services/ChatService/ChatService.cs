@@ -121,7 +121,7 @@ namespace DocuMind.Application.Services.ChatService
             };
 
             await _chatMessage.AddAsync(userMessage);
-            
+            await _chatMessage.SaveChangesAsync();
 
             var ragResult = await _ragService.AskQuestionAsync(dto.Content, documentIds, sessionId);
 
