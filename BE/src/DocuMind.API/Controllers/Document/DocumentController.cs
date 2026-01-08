@@ -33,5 +33,19 @@ namespace DocuMind.API.Controllers.Document
 
             return Ok(result.Data);
         }
+
+        [HttpPost("status")]
+        public async Task<IActionResult> CheckStatus([FromBody] List<int> documentIds)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _documentService.CheckStatusAsync(int.Parse(userId), documentIds);
+
+            if (!result.Success)
+                return BadRequest(ApiResponse<List<DocumentItemDto>>.ErrorResponse(result.Message));
+
+            return Ok(result.Data);
+        }
     }
 }
