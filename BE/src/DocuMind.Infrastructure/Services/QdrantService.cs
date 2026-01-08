@@ -26,7 +26,7 @@ namespace DocuMind.Infrastructure.Services
             var host = configuration["QdrantSettings:Host"] ?? "localhost";
             var port = int.Parse(configuration["QdrantSettings:Port"] ?? "6334");   
             _collectionName = configuration["QdrantSettings:CollectionName"] ?? "documind_vectors";
-            _vectorSize = int.Parse(configuration["QdrantSettings:VectorSize"] ?? "1024");
+            _vectorSize = int.Parse(configuration["QdrantSettings:VectorSize"] ?? "3072");
 
             _client = new QdrantClient(host, port);
 

@@ -9,23 +9,23 @@ using DocuMind.Infrastructure.DTOs;
 using Google.GenAI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using static System.Net.WebRequestMethods;
+
 
 
 namespace DocuMind.Infrastructure.Services
 {
     class GeminiLlmService : ILlmService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _client;
 
         private readonly ILogger<GeminiLlmService> _logger;
         private readonly string _model;
-        private readonly string _key;
+        private readonly string _apiKey;
 
-        public GeminiLlmService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiLlmService> logger)
+        public GeminiLlmService(IHttpClientFactory factory, IConfiguration configuration, ILogger<GeminiLlmService> logger)
         {
-            _key = configuration["Gemini:ApiKey"]!;
-            _httpClient = httpClient;
+            _apiKey = configuration["Gemini:ApiKey"]!;
+            _client = factory.CreateClient("Gemini");
             _logger = logger;
             _model = configuration["Gemini:Model"]!;
             _logger.LogInformation("Gemini LLM Service initialized with model: {Model}", _model);
@@ -44,16 +44,13 @@ namespace DocuMind.Infrastructure.Services
                 }
             };
 
-            var response = await _httpClient.PostAsJsonAsync(
-                $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_key}",
-                request
-            );
+            var response = await _client.PostAsJsonAsync($"models/{_model}:generateContent?key={_apiKey}", request, ct);
 
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadFromJsonAsync<GeminiResponse>(cancellationToken: ct);
 
-            // ghép tất cả parts thành text nhiều dòng
+
             var builder = new StringBuilder();
 
             foreach (var candidate in json.Candidates)
@@ -61,7 +58,7 @@ namespace DocuMind.Infrastructure.Services
                 foreach (var part in candidate.Content.Parts)
                 {
                     builder.AppendLine(part.Text);
-                    builder.AppendLine(); // thêm khoảng trắng giữa các đoạn
+                    builder.AppendLine();
                 }
             }
 
@@ -69,5 +66,5 @@ namespace DocuMind.Infrastructure.Services
         }
     }
 
-   
+
 }
