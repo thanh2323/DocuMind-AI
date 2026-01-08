@@ -168,8 +168,7 @@ const ChatPage = () => {
         setIsCreatingChat(true);
         const title = inputMessage.trim().substring(0, 50) + "...";
         const createRes = await chatService.createChat({
-          title: title,
-          documentIds: selectedDocIds,
+          title: title
         });
 
         if (createRes.success) {
@@ -248,8 +247,7 @@ const ChatPage = () => {
       if (!targetSessionId) {
         const title = file.name.replace(/\.[^/.]+$/, ""); // Use filename as title
         const createRes = await chatService.createChat({
-          title: title,
-          documentIds: [], // Empty initially
+          title: title
         });
 
         if (createRes.success) {
