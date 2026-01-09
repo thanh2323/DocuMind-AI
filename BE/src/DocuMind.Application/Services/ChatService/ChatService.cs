@@ -138,11 +138,12 @@ namespace DocuMind.Application.Services.ChatService
 
             await _chatMessage.AddAsync(botMessage);
             await _chatMessage.SaveChangesAsync();
-            //// 5. Update session activity
-            //session.LastActiveAt = DateTime.UtcNow;
-            //await _chatSessionRepository.AddAsync(session);
 
-            //await _chatSessionRepository.SaveChangesAsync();
+            // 5. Update session activity
+            session.LastActiveAt = DateTime.UtcNow;
+            await _chatSessionRepository.AddAsync(session);
+
+            await _chatSessionRepository.SaveChangesAsync();
 
             // 6. Build response DTO
             var response = new ChatResponseDto
