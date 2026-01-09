@@ -90,8 +90,6 @@ namespace DocuMind.Application.Services.ChatService
                 Title = session.Title,
                 CreatedAt = session.CreatedAt,
                 LastActiveAt = session.LastActiveAt,
-                MessageCount = 0,
-                Documents = []
             });
         }
 

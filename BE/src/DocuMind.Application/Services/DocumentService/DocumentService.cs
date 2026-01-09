@@ -52,6 +52,22 @@ namespace DocuMind.Application.Services.DocumentService
             throw new NotImplementedException();
         }
 
+        public async Task<ServiceResult<List<DocumentItemDto>>> CheckStatusAsync(int userId, List<int> documentIds)
+        {
+            var documents = await _documentRepository.GetDocumentsAsync(documentIds, userId);
+
+            var result = documents.Select(d => new DocumentItemDto
+            {
+                Id = d.Id,
+                FileName = d.FileName,
+                FileSize = d.FileSize,
+                Status = d.Status,
+                CreatedAt = d.CreatedAt
+            }).ToList();
+
+            return ServiceResult<List<DocumentItemDto>>.Ok(result);
+        }
+
         public async Task<ServiceResult<List<DocumentItemDto>>> GetByIdsAsync(int userId, List<int> documentIds)
         {
             var documents = await _documentRepository.GetDocumentsAsync(documentIds, userId);

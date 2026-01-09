@@ -20,5 +20,16 @@ export const documentService = {
         }
     },
 
+    // Check status of documents
+    checkStatus: async (documentIds) => {
+        try {
+            const response = await api.post('/api/Document/status', documentIds);
+            return response.data;
+        } catch (error) {
+            console.error("Error checking document status:", error);
+            throw error;
+        }
+    },
+
     // Add other document related methods here if needed (delete, list, etc.)
 };

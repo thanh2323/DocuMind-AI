@@ -12,6 +12,7 @@ namespace DocuMind.Application.Interface.IDocument
     {
         Task<ServiceResult<DocumentItemDto>> UploadDocument(int userId, int sessionId, UploadDocumentDto dto);
         Task<ServiceResult<List<DocumentItemDto>>> GetByIdsAsync(int userId, List<int> documentIds);
+        Task<ServiceResult<List<DocumentItemDto>>> CheckStatusAsync(int userId, List<int> documentIds);
         Task<ServiceResult<bool>> DeleteAsync(int userId, int documentId, bool isAdmin);
     }
 }
