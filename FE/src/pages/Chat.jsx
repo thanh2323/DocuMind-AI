@@ -197,7 +197,7 @@ const ChatPage = () => {
       // Optimistic
       const tempMsg = {
         id: Date.now(),
-        role: "user",
+        isUser: true,
         content: content,
         timestamp: new Date().toISOString(),
       };
@@ -479,10 +479,10 @@ const ChatPage = () => {
                 messages.map((msg, idx) => (
                   <div
                     key={idx}
-                    className={`group flex gap-4 ${msg.role === "user" ? "flex-row-reverse" : ""
+                    className={`group flex gap-4 ${msg.isUser == true ? "flex-row-reverse" : ""
                       }`}
                   >
-                    {msg.role !== "user" && (
+                    {msg.isUser == false && (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-1">
                         <span className="material-symbols-outlined text-sm">
                           auto_awesome
@@ -490,11 +490,11 @@ const ChatPage = () => {
                       </div>
                     )}
                     <div
-                      className={`flex flex-col max-w-[85%] ${msg.role === "user" ? "items-end" : "items-start"
+                      className={`flex flex-col max-w-[85%] ${msg.isUser == true ? "items-end" : "items-start"
                         }`}
                     >
                       <div
-                        className={`px-5 py-3.5 ${msg.role === "user"
+                        className={`px-5 py-3.5 ${msg.isUser == true
                           ? "bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark rounded-3xl rounded-tr-md"
                           : "text-text-light dark:text-text-dark leading-relaxed"
                           }`}

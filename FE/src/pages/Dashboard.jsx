@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { authService } from "../services/auth.service";
 import { dashboardService } from "../services/dashboard.service";
+import { documentService } from "../services/document.service";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize: 5,
+    totalCount: 0,
+    totalPages: 1
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,7 +42,33 @@ const DashboardPage = () => {
     };
 
     fetchDashboard();
+    fetchDocuments(1);
   }, []);
+
+  const fetchDocuments = async (page) => {
+    try {
+      const response = await documentService.getDocuments(page, pagination.pageSize);
+      if (response && response.items) {
+        setDocuments(response.items);
+        setPagination({
+          page: response.currentPage,
+          pageSize: response.pageSize,
+          totalCount: response.totalCount,
+          totalPages: response.totalPages
+        });
+      }
+    } catch (err) {
+      console.error("Documents fetch error:", err);
+    } finally {
+      // setLoading(false); // Loading is handled by dashboard fetch mostly, but good to keep independent if needed
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      fetchDocuments(newPage);
+    }
+  };
 
   if (loading) {
     return (
@@ -58,7 +92,8 @@ const DashboardPage = () => {
     );
   }
 
-  const { statistics, recentDocuments, recentChats } = dashboardData || {};
+  const { statistics, recentChats } = dashboardData || {};
+  // documents state replaces recentDocuments
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden text-[#0d121b] dark:text-gray-200 bg-background-light dark:bg-background-dark font-display">
@@ -179,9 +214,9 @@ const DashboardPage = () => {
               <div className="p-6">
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
                   <h2 className="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">
-                    Recent Documents
+                    Documents
                   </h2>
-                  <div className="w-full md:w-auto md:max-w-xs">
+                  {/* <div className="w-full md:w-auto md:max-w-xs">
                     <label className="flex flex-col w-full">
                       <div className="flex w-full flex-1 items-stretch rounded-lg h-11">
                         <div className="text-slate-500 dark:text-gray-400 flex border-none bg-gray-100 dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg">
@@ -196,7 +231,7 @@ const DashboardPage = () => {
                         />
                       </div>
                     </label>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -228,8 +263,8 @@ const DashboardPage = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                    {recentDocuments &&
-                      recentDocuments.map((doc) => (
+                    {documents &&
+                      documents.map((doc) => (
                         <tr
                           key={doc.id}
                           className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
@@ -241,12 +276,12 @@ const DashboardPage = () => {
                             <div className="flex items-center gap-2">
                               <div
                                 className={`size-2 rounded-full ${doc.statusDisplay == "Ready"
-                                    ? "bg-green-500"
-                                    : doc.statusDisplay == "Pending"
-                                      ? "bg-yellow-500"
-                                      : doc.statusDisplay == "Error"
-                                        ? "bg-red-500"
-                                        : "bg-gray-500"
+                                  ? "bg-green-500"
+                                  : doc.statusDisplay == "Pending"
+                                    ? "bg-yellow-500"
+                                    : doc.statusDisplay === "Error" // Error
+                                      ? "bg-red-500"
+                                      : "bg-gray-500"
                                   }`}
                               ></div>
                               <span>{doc.statusDisplay}</span>
@@ -265,7 +300,7 @@ const DashboardPage = () => {
                           </td>
                         </tr>
                       ))}
-                    {(!recentDocuments || recentDocuments.length === 0) && (
+                    {(!documents || documents.length === 0) && (
                       <tr>
                         <td
                           colSpan="4"
@@ -280,9 +315,27 @@ const DashboardPage = () => {
               </div>
               <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
                 <span className="text-sm text-slate-600 dark:text-gray-400">
-                  Showing {recentDocuments?.length || 0} results
+                  Showing {documents.length} of {pagination.totalCount} results
                 </span>
-                {/* Pagination controls can be added here later */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={pagination.page === 1}
+                    className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    Previous
+                  </button>
+                  <span className="px-3 py-1 text-sm flex items-center">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    disabled={pagination.page === pagination.totalPages}
+                    className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
             <div className="lg:col-span-1">
@@ -326,9 +379,10 @@ const DashboardPage = () => {
               </div>
             </div>
           </div>
+
         </main>
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -100,14 +100,9 @@ const ChatListPage = () => {
                   {session.title || "Untitled Notebook"}
                 </h3>
 
-                <p className="text-sm text-subtext-light dark:text-subtext-dark mb-4 line-clamp-3 flex-1">
-                  Contains {session.documentCount || 0} sources.
-                  {session.lastMessage
-                    ? ` "${session.lastMessage}..."`
-                    : " No messages yet."}
-                </p>
 
-                <div className="pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between text-xs text-subtext-light dark:text-subtext-dark">
+
+                <div className="pt-4 mt-auto border-t border-border-light dark:border-border-dark flex items-center justify-between text-xs text-subtext-light dark:text-subtext-dark">
                   <span>
                     {new Date(session.lastActiveAt).toLocaleDateString()}
                   </span>

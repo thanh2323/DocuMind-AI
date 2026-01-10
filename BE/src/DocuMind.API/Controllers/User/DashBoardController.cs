@@ -1,5 +1,6 @@
 ﻿using DocuMind.Application.DTOs.Common;
 using DocuMind.Application.DTOs.User.Dashboard;
+using DocuMind.Application.DTOs.Document;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using DocuMind.Application.Interface.IUser;
@@ -27,6 +28,20 @@ namespace DocuMind.API.Controllers.User
                 return BadRequest(ApiResponse<UserDashboardDto>.ErrorResponse(dashboard!.Message));
             }
             return Ok(ApiResponse<UserDashboardDto>.SuccessResponse(dashboard.Data!, dashboard.Message));
+        }
+
+        [HttpGet("documents")]
+        public async Task<IActionResult> GetDocuments([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _dashboardService.GetDocumentsPagedAsync(int.Parse(userId), page, pageSize);
+
+            if (!result.Success)
+                return BadRequest(ApiResponse<PagedResult<DocumentItemDto>>.ErrorResponse(result.Message));
+
+            return Ok(result.Data);
         }
     }
 }

@@ -20,6 +20,17 @@ export const documentService = {
         }
     },
 
+    // Get paginated documents
+    getDocuments: async (page = 1, pageSize = 10) => {
+        try {
+            const response = await api.get(`/api/user/documents?page=${page}&pageSize=${pageSize}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching documents:", error);
+            throw error;
+        }
+    },
+
     // Check status of documents
     checkStatus: async (documentIds) => {
         try {
