@@ -22,12 +22,30 @@ namespace DocuMind.Application.Services.UserService
         private readonly IChatSessionRepository _chatSessionRepository;
         private readonly IUserRepository _userRepository;
 
-        public DashBoardService(IUserRepository userRepository,IDocumentRepository documentRepository, IChatSessionRepository chatSessionRepository)
+        public DashBoardService(IUserRepository userRepository, IDocumentRepository documentRepository, IChatSessionRepository chatSessionRepository)
         {
             _documentRepository = documentRepository;
             _userRepository = userRepository;
             _chatSessionRepository = chatSessionRepository;
         }
+        public async Task<ServiceResult<PagedResult<DocumentItemDto>>> GetDocumentsPagedAsync(int userId, int page, int pageSize = 5)
+        {
+            var documents = await _documentRepository.GetPagedUserDocumentsAsync(userId, page, pageSize);
+            var totalCount = await _documentRepository.CountUserDocumentsAsync(userId);
+            
+            var documentDtos = documents.Select(d => new DocumentItemDto
+            {
+                Id = d.Id,
+                FileName = d.FileName,
+                FileSize = d.FileSize,
+                Status = d.Status,
+                CreatedAt = d.CreatedAt
+            }).ToList();
+
+            var pagedResult = new PagedResult<DocumentItemDto>(documentDtos, totalCount, page, pageSize);
+            return ServiceResult<PagedResult<DocumentItemDto>>.Ok(pagedResult);
+        }
+
         public async Task<ServiceResult<UserDashboardDto>> GetDashboardAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);

@@ -17,6 +17,7 @@ function App() {
 
         {/* Protected Routes wrapped in MainLayout */}
         <Route element={<MainLayout />}>
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/library" element={<ChatListPage />} />
           <Route path="/chat" element={<ChatListPage />} /> {/* Entry is Library */}
