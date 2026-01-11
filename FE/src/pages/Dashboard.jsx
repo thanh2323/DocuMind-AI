@@ -130,14 +130,6 @@ const DashboardPage = () => {
                     notifications
                   </span>
                 </button>
-                <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer"
-                  onClick={handleLogout}
-                  style={{
-                    backgroundImage:
-                      'url("https://lh3.googleusercontent.com/aida-public/AB6AXuB7w_ESzLFBjDfoW_p1QTzdH-lV8cifvhDkpyYDjmusmznGvelF8FS0YcVm397miZeGWMaKmT2P85uTH-20KWl4Dp-g-PdccUtKj60EZm1z-RWSe3CeJ_mAGX_hpIsat4URwf8aKXK9Yly9YaryWKCsn_6ziM_exALQz4ZGu4lmXs4bMvdPjYR5Erui17PDFXwyudss_6Sbn4mCmBdw1Rn4T0hPgyMNWaWuBnrmybW3_KIunUa258BuL7BNjMG-HcrHyXTVqgU0YlY")',
-                  }}
-                ></div>
               </div>
             </div>
           </div>
