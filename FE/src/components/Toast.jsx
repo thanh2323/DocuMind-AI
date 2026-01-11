@@ -23,7 +23,7 @@ const Toast = ({ message, type = 'info', onClose, duration = 3000 }) => {
     };
 
     return (
-        <div className={`fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg transition-all animate-slide-up max-w-sm ${bgColors[type] || bgColors.info}`}>
+        <div className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg transition-all animate-slide-up max-w-sm ${bgColors[type] || bgColors.info}`}>
             <span className="material-symbols-outlined text-xl">{icons[type]}</span>
             <p className="text-sm font-medium">{message}</p>
             <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-full transition-colors ml-2">
