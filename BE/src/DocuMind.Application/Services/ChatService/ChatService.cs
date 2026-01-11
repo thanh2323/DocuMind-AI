@@ -18,10 +18,10 @@ namespace DocuMind.Application.Services.ChatService
     public class ChatService : IChatService
     {
         private readonly IChatSessionRepository _chatSessionRepository;
-       
+
         private readonly IRagService _ragService;
         private readonly IRepository<ChatMessage> _chatMessage;
-       
+
 
         public ChatService(IRepository<ChatMessage> chatMessage, IRagService ragService, IChatSessionRepository chatSessionRepository)
         {
@@ -109,7 +109,14 @@ namespace DocuMind.Application.Services.ChatService
             if (!documentIds.Any())
                 return ServiceResult<ChatResponseDto>.Fail("No documents in this session");
 
+            // 2. Get RAG answer
+            var ragResult = await _ragService.AskQuestionAsync(dto.Content, documentIds, sessionId);
 
+            if (!ragResult.Success)
+            {
+                return ServiceResult<ChatResponseDto>.Fail(ragResult.Message);
+            }
+            // 3. Save user message
             var userMessage = new ChatMessage
             {
                 SessionId = sessionId,
@@ -121,12 +128,6 @@ namespace DocuMind.Application.Services.ChatService
             await _chatMessage.AddAsync(userMessage);
             await _chatMessage.SaveChangesAsync();
 
-            var ragResult = await _ragService.AskQuestionAsync(dto.Content, documentIds, sessionId);
-
-            if (!ragResult.Success)
-            {
-                return ServiceResult<ChatResponseDto>.Fail(ragResult.Message);
-            }
             // 4. Save bot message
             var botMessage = new ChatMessage
             {
