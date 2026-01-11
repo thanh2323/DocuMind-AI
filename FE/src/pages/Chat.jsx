@@ -75,15 +75,17 @@ const ChatPage = () => {
   // Polling for Pending Documents
   useEffect(() => {
     // Only poll if there are pending docs with real IDs.
-    // Check for both backend status 0 ('Pending') and the frontend 'isPending' flag 
+    // Check for both backend status 0 ('Pending') and the frontend 'isPending' flag
     // though the latter is removed once real doc is swapped in.
     const realPendingDocs = documents.filter(
-      (d) => (d.status === "Pending" || d.status === 0) && !d.id.toString().startsWith("temp-")
+      (d) =>
+        (d.status === "Pending" || d.status === 0) &&
+        !d.id.toString().startsWith("temp-")
     );
 
     if (realPendingDocs.length === 0) return;
 
-    const documentIds = realPendingDocs.map(d => d.id);
+    const documentIds = realPendingDocs.map((d) => d.id);
 
     const pollInterval = setInterval(async () => {
       try {
@@ -105,14 +107,22 @@ const ChatPage = () => {
 
           if (hasChanges) {
             // Check for newly ready/error docs to show toast
-            statuses.forEach(s => {
-              const prevDoc = prevDocs.find(d => d.id === s.id);
+            statuses.forEach((s) => {
+              const prevDoc = prevDocs.find((d) => d.id === s.id);
               // If we found the doc and status changed
               if (prevDoc && prevDoc.status !== s.status) {
-                if (s.status === 1 || s.status === "Ready") { // Ready
-                  setToast({ message: `${prevDoc.fileName} is ready!`, type: "success" });
-                } else if (s.status === 2 || s.status === "Error") { // Error
-                  setToast({ message: `Failed to process ${prevDoc.fileName}`, type: "error" });
+                if (s.status === 1 || s.status === "Ready") {
+                  // Ready
+                  setToast({
+                    message: `${prevDoc.fileName} is ready!`,
+                    type: "success",
+                  });
+                } else if (s.status === 2 || s.status === "Error") {
+                  // Error
+                  setToast({
+                    message: `Failed to process ${prevDoc.fileName}`,
+                    type: "error",
+                  });
                 }
               }
             });
@@ -120,7 +130,6 @@ const ChatPage = () => {
           }
           return prevDocs;
         });
-
       } catch (error) {
         console.error("Polling failed", error);
       }
@@ -128,10 +137,6 @@ const ChatPage = () => {
 
     return () => clearInterval(pollInterval);
   }, [documents]);
-
-
-
-
 
   const toggleDocument = (docId) => {
     setSelectedDocIds((prev) => {
@@ -168,7 +173,7 @@ const ChatPage = () => {
         setIsCreatingChat(true);
         const title = inputMessage.trim().substring(0, 50) + "...";
         const createRes = await chatService.createChat({
-          title: title
+          title: title,
         });
 
         if (createRes.success) {
@@ -211,7 +216,7 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.error("Send failed", error);
-      setToast({
+      const res = setToast({
         message: "Failed to send message. Please try again.",
         type: "error",
       });
@@ -247,7 +252,7 @@ const ChatPage = () => {
       if (!targetSessionId) {
         const title = file.name.replace(/\.[^/.]+$/, ""); // Use filename as title
         const createRes = await chatService.createChat({
-          title: title
+          title: title,
         });
 
         if (createRes.success) {
@@ -271,7 +276,7 @@ const ChatPage = () => {
         // Update documents list: remove temp doc and add real doc
         setDocuments((prev) => {
           // Remove temp doc
-          const withoutTemp = prev.filter(d => d.id !== tempId);
+          const withoutTemp = prev.filter((d) => d.id !== tempId);
           // Add new doc if not already there (it shouldn't be)
           return [...withoutTemp, res];
         });
@@ -338,10 +343,11 @@ const ChatPage = () => {
       <div className="flex flex-1 w-full overflow-hidden relative">
         {/* Sources Sidebar */}
         <aside
-          className={`${isSourcesOpen
-            ? "w-80 translate-x-0"
-            : "w-0 -translate-x-full opacity-0"
-            } transition-all duration-300 bg-white dark:bg-content-dark border-r border-border-light dark:border-border-dark flex flex-col h-full shrink-0 absolute md:static z-20 shadow-xl md:shadow-none`}
+          className={`${
+            isSourcesOpen
+              ? "w-80 translate-x-0"
+              : "w-0 -translate-x-full opacity-0"
+          } transition-all duration-300 bg-white dark:bg-content-dark border-r border-border-light dark:border-border-dark flex flex-col h-full shrink-0 absolute md:static z-20 shadow-xl md:shadow-none`}
         >
           <div className="p-4 flex items-center justify-between border-b border-border-light dark:border-border-dark">
             <h2 className="text-base font-semibold text-text-light dark:text-text-dark">
@@ -393,26 +399,31 @@ const ChatPage = () => {
 
             <div className="space-y-1">
               {documents.map((doc) => {
-                const isProcessing = doc.isPending || doc.status === 0 || doc.status === "Pending";
+                const isProcessing =
+                  doc.isPending || doc.status === 0 || doc.status === "Pending";
                 const isError = doc.status === 2 || doc.status === "Error";
 
                 return (
                   <div
                     key={doc.id}
-                    className={`flex items-center justify-between group cursor-pointer p-2 -mx-2 rounded-lg transition-colors ${isProcessing || isError
-                      ? "cursor-not-allowed bg-gray-50 dark:bg-gray-800/50 opacity-80"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                      }`}
+                    className={`flex items-center justify-between group cursor-pointer p-2 -mx-2 rounded-lg transition-colors ${
+                      isProcessing || isError
+                        ? "cursor-not-allowed bg-gray-50 dark:bg-gray-800/50 opacity-80"
+                        : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
                   >
                     <div
                       className="flex items-center gap-3 overflow-hidden flex-1"
-                      onClick={() => !isProcessing && !isError && toggleDocument(doc.id)}
+                      onClick={() =>
+                        !isProcessing && !isError && toggleDocument(doc.id)
+                      }
                     >
                       <div
-                        className={`w-8 h-8 rounded flex items-center justify-center shrink-0 ${selectedDocIds.includes(doc.id)
-                          ? "bg-blue-100 text-blue-600"
-                          : "bg-gray-100 text-gray-500"
-                          }`}
+                        className={`w-8 h-8 rounded flex items-center justify-center shrink-0 ${
+                          selectedDocIds.includes(doc.id)
+                            ? "bg-blue-100 text-blue-600"
+                            : "bg-gray-100 text-gray-500"
+                        }`}
                       >
                         <span className="material-symbols-outlined text-lg">
                           {isError ? "error" : "article"}
@@ -420,21 +431,32 @@ const ChatPage = () => {
                       </div>
                       <div className="flex flex-col overflow-hidden">
                         <span
-                          className={`text-sm truncate ${selectedDocIds.includes(doc.id)
-                            ? "font-medium text-text-light dark:text-white"
-                            : "text-subtext-light"
-                            }`}
+                          className={`text-sm truncate ${
+                            selectedDocIds.includes(doc.id)
+                              ? "font-medium text-text-light dark:text-white"
+                              : "text-subtext-light"
+                          }`}
                         >
                           {doc.fileName}
                         </span>
-                        {isProcessing && <span className="text-[10px] text-primary">Processing...</span>}
-                        {isError && <span className="text-[10px] text-red-500">Error</span>}
+                        {isProcessing && (
+                          <span className="text-[10px] text-primary">
+                            Processing...
+                          </span>
+                        )}
+                        {isError && (
+                          <span className="text-[10px] text-red-500">
+                            Error
+                          </span>
+                        )}
                       </div>
                     </div>
                     {isProcessing ? (
                       <div className="w-4 h-4 mr-2 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0"></div>
                     ) : isError ? (
-                      <span className="material-symbols-outlined text-red-500 text-lg mr-1">warning</span>
+                      <span className="material-symbols-outlined text-red-500 text-lg mr-1">
+                        warning
+                      </span>
                     ) : (
                       <input
                         checked={selectedDocIds.includes(doc.id)}
@@ -479,8 +501,9 @@ const ChatPage = () => {
                 messages.map((msg, idx) => (
                   <div
                     key={idx}
-                    className={`group flex gap-4 ${msg.isUser == true ? "flex-row-reverse" : ""
-                      }`}
+                    className={`group flex gap-4 ${
+                      msg.isUser == true ? "flex-row-reverse" : ""
+                    }`}
                   >
                     {msg.isUser == false && (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-1">
@@ -490,14 +513,16 @@ const ChatPage = () => {
                       </div>
                     )}
                     <div
-                      className={`flex flex-col max-w-[85%] ${msg.isUser == true ? "items-end" : "items-start"
-                        }`}
+                      className={`flex flex-col max-w-[85%] ${
+                        msg.isUser == true ? "items-end" : "items-start"
+                      }`}
                     >
                       <div
-                        className={`px-5 py-3.5 ${msg.isUser == true
-                          ? "bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark rounded-3xl rounded-tr-md"
-                          : "text-text-light dark:text-text-dark leading-relaxed"
-                          }`}
+                        className={`px-5 py-3.5 ${
+                          msg.isUser == true
+                            ? "bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark rounded-3xl rounded-tr-md"
+                            : "text-text-light dark:text-text-dark leading-relaxed"
+                        }`}
                       >
                         <p className="whitespace-pre-wrap text-[15px]">
                           {msg.content}
