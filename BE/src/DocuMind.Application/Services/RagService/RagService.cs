@@ -26,7 +26,7 @@ namespace DocuMind.Application.Services.RagService
     public class RagService : IRagService
     {
         private readonly IIntentClassifierService _intentClassifier;
-        private readonly IPromptFactory _promptFactory; 
+        private readonly IPromptFactory _promptFactory;
         private readonly IEmbeddingService _embeddingService;
         private readonly IDocumentRepository _documentRepository;
         private readonly IPdfProcessorService _pdfProcessorService;
@@ -69,7 +69,7 @@ namespace DocuMind.Application.Services.RagService
         public async Task<ServiceResult<RagDto>> AskQuestionAsync(string question, List<int> documentIds, int sessionId, CancellationToken cancellationToken = default)
         {
             var stopWatch = Stopwatch.StartNew();
-
+            string answer;
             // Step 1: Classify Intent
             var intent = await _intentClassifier.ClassifyIntentAsync(question, cancellationToken);
             _logger.LogInformation("Processing RAG request with intent: {Intent}", intent);
@@ -98,9 +98,19 @@ namespace DocuMind.Application.Services.RagService
             // Step 4: Create prompt using Factory
             var prompt = _promptFactory.GetPrompt(intent, question, context, conversationHistory);
 
-            // Step 5: Generate answer
-            _logger.LogDebug("Generating answer with Gemini...");
-            var answer = await _llmService.AskAsync(prompt, cancellationToken);
+
+            try
+            {
+                // Step 5: Generate answer
+                _logger.LogDebug("Generating answer with Gemini...");
+                 answer = await _llmService.AskAsync(prompt, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("LLM service returned null answer for prompt.");
+                stopWatch.Stop();
+                return ServiceResult<RagDto>.Fail("Failed to generate answer. Try Again");
+            }
 
             stopWatch.Stop();
 
@@ -212,7 +222,7 @@ namespace DocuMind.Application.Services.RagService
 
             return sb.ToString();
         }
- 
+
 
     }
 }

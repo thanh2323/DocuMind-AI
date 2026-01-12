@@ -142,8 +142,7 @@ namespace DocuMind.Application.Services.ChatService
 
             // 5. Update session activity
             session.LastActiveAt = DateTime.UtcNow;
-            await _chatSessionRepository.AddAsync(session);
-
+            await _chatSessionRepository.UpdateAsync(session);
             await _chatSessionRepository.SaveChangesAsync();
 
             // 6. Build response DTO
