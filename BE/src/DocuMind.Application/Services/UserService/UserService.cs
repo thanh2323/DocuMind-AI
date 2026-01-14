@@ -41,7 +41,10 @@ namespace DocuMind.Application.Services.UserService
         public async Task<ServiceResult<UserProfileDto>> GetProfile(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            if (user!.IsLocked)
+            if (user == null)
+                return ServiceResult<UserProfileDto>.Fail("User not found");
+
+            if (user.IsLocked)
             {
                 return ServiceResult<UserProfileDto>.Fail("Your account has been locked. Please contact support.");
             }
@@ -70,7 +73,10 @@ namespace DocuMind.Application.Services.UserService
         public async Task<ServiceResult<UserProfileDto>> UpdateProfile(int id, UpdateProfileDto dto)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            if (user!.IsLocked)
+            if (user == null)
+                return ServiceResult<UserProfileDto>.Fail("User not found");
+
+            if (user.IsLocked)
             {
                 return ServiceResult<UserProfileDto>.Fail("Your account has been locked. Please contact support.");
             }
