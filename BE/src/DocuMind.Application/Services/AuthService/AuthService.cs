@@ -28,6 +28,9 @@ namespace DocuMind.Application.Services.AuthService
         }
         public async Task<ServiceResult<AuthResponseDto>> LoginAsync(LoginDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
+                return ServiceResult<AuthResponseDto>.Fail("Invalid request");
+
             var user = await userRepository.GetByEmailAsync(dto.Email);
 
             if (user == null || !_passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
@@ -56,6 +59,9 @@ namespace DocuMind.Application.Services.AuthService
 
         public async Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password) || string.IsNullOrWhiteSpace(dto.FullName))
+                return ServiceResult<AuthResponseDto>.Fail("Invalid request");
+
             var existingUser = await userRepository.EmailExistsAsync(dto.Email);
 
             if (existingUser)
@@ -99,6 +105,9 @@ namespace DocuMind.Application.Services.AuthService
 
         public async Task<ServiceResult<AuthResponseDto>> ChangePasswordAsync(ChangePasswordDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.CurrentPassword) || string.IsNullOrWhiteSpace(dto.NewPassword))
+                return ServiceResult<AuthResponseDto>.Fail("Invalid request");
+
             var user = await userRepository.GetByEmailAsync(dto.Email);
             if (user == null)
                 return ServiceResult<AuthResponseDto>.Fail("User not found");
