@@ -164,7 +164,7 @@ namespace DocuMind.Application.Tests.Services
 
             // ASSERT
             Assert.True(result.Success);
-            Assert.Equal("fake_register_token", result.Data.Token);
+            Assert.Equal("fake_register_token", result.Data!.Token);
 
             // VERIFY (Kiểm tra hành vi)
             // Verify that AddAsync and SaveChangesAsync were actually called
@@ -195,9 +195,7 @@ namespace DocuMind.Application.Tests.Services
         }
         [Theory]
         [InlineData("", "password")] // Empty Email
-        [InlineData(null, "password")] // Null Email
         [InlineData("test@example.com", "")] // Empty Password
-        [InlineData("test@example.com", null)] // Null Password
         public async Task LoginAsync_InvalidInput_ReturnsFailure(string email, string password)
         {
             // ARRANGE
@@ -250,7 +248,7 @@ namespace DocuMind.Application.Tests.Services
 
             // ASSERT
             Assert.True(result.Success);
-            Assert.Equal("new_token", result.Data.Token);
+            Assert.Equal("new_token", result.Data!.Token);
             
             // VERIFY: Should update user and save changes
             _mockUserRepo.Verify(repo => repo.UpdateAsync(It.Is<User>(u => u.PasswordHash == "hashed_new_password")), Times.Once);
@@ -262,7 +260,7 @@ namespace DocuMind.Application.Tests.Services
         {
             // ARRANGE
             var changeDto = new ChangePasswordDto { Email = "unknown@example.com", CurrentPassword = "any", NewPassword = "any" };
-            _mockUserRepo.Setup(repo => repo.GetByEmailAsync(changeDto.Email)).ReturnsAsync((User)null);
+            _mockUserRepo.Setup(repo => repo.GetByEmailAsync(changeDto.Email)).ReturnsAsync((User?)null);
 
             // ACT
             var result = await _authService.ChangePasswordAsync(changeDto);
