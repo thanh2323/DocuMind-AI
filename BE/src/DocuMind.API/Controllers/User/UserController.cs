@@ -34,7 +34,7 @@ namespace DocuMind.API.Controllers.User
             var user = await _userService.GetProfile(int.Parse(userId!));
             if (user == null)
             {
-                return BadRequest(ApiResponse<UserService>.ErrorResponse(user!.Message));
+                return BadRequest(ApiResponse<UserService>.ErrorResponse("User not found"));
             }
 
             return Ok(ApiResponse<UserProfileDto>.SuccessResponse(user.Data!, user.Message));
