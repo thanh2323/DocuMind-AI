@@ -10,7 +10,7 @@ services:
     ports:
       - "5000:8080"
     env_file:
-      - .env.development
+      - ${ENV_FILE}
     depends_on:
       - sql-db
       - qdrant
@@ -28,7 +28,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: documind-db
     env_file:
-      - .env.example
+      - ${ENV_FILE}
     ports:
       - "1433:1433" # dev only
 
