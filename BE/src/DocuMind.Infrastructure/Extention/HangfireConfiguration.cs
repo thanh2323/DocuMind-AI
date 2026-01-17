@@ -28,7 +28,8 @@ namespace DocuMind.Infrastructure.Extention
                             SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
                             QueuePollInterval = TimeSpan.Zero,
                             UseRecommendedIsolationLevel = true,
-                            DisableGlobalLocks = true
+                            DisableGlobalLocks = true,
+                            PrepareSchemaIfNecessary = false // Prevent auto-creation to avoid race condition with EF
                         }
                     );
             });

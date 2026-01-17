@@ -82,7 +82,9 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+
+// Configure the HTTP request pipeline.
+if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -91,18 +93,14 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty; // Swagger at root URL
     });
     app.UseDeveloperExceptionPage();
-}
-
-
-// CORS must be before Authentication
-app.UseCors("AllowFrontend");
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+
+// app.UseHttpsRedirection(); // Disabled for Docker to prevent redirect loops or unmapped port issues
+
+// CORS must be before Authentication
+app.UseCors("AllowFrontend");
 
 app.UseCors("DocuMindCORSPolicy"); // CORS Middleware
 app.UseAuthentication();

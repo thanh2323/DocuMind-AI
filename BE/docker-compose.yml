@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  documind-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: documind-be:1.0.0
+    container_name: documind-api
+    ports:
+      - "5000:8080"
+    env_file:
+      - .env.development
+    depends_on:
+      - sql-db
+      - qdrant
+
+    networks:
+      - documind-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+
+  sql-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: documind-db
+    env_file:
+      - .env.example
+    ports:
+      - "1433:1433" # dev only
+
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - documind-network
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: documind-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - documind-network
+    restart: unless-stopped
+
+networks:
+  documind-network:
+    driver: bridge
+
+volumes:
+  mssql-data:
+  qdrant-data:
