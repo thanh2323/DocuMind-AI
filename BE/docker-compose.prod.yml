@@ -27,6 +27,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot
       - ./logs/nginx:/var/log/nginx
     depends_on:
       - documind-api
@@ -34,12 +37,6 @@ services:
       - documind-network
     security_opt:
       - no-new-privileges:true
-
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
     restart: always
 
   sql-db:
