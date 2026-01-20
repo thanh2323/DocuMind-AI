@@ -1,0 +1,89 @@
+version: "3.8"
+
+services:
+  documind-api:
+    image: thannh2323/documind-be:1.0.0
+    container_name: documind-api
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    depends_on:
+      - sql-db
+      - qdrant
+    networks:
+      - documind-network
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+  nginx:
+    image: thannh2323/documind-nginx:1.0.0
+    container_name: documind-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - documind-api
+    networks:
+      - documind-network
+    security_opt:
+      - no-new-privileges:true
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+  sql-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: documind-db
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    # Security: Ports not exposed externally
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - documind-network
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    restart: always
+
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    container_name: documind-qdrant
+    # Security: Ports not exposed externally
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - documind-network
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+networks:
+  documind-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: documind-net
+
+volumes:
+  mssql-data:
+  qdrant-data:
