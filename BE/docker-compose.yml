@@ -8,9 +8,10 @@ services:
     image: documind-be:1.0.0
     container_name: documind-api
     env_file:
-      - ${ENV_FILE}
+      - ${ENV_FILE:-.env.development}
     depends_on:
-      - sql-db
+      #- sql-db
+      - postgres
       - qdrant
 
     networks:
@@ -33,16 +34,29 @@ services:
       - documind-network
     restart: unless-stopped
 
-  sql-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  #sql-db:
+  #  image: mcr.microsoft.com/mssql/server:2022-latest
+  #  container_name: documind-db
+  #  env_file:
+  #    - ${ENV_FILE}
+  #  ports:
+  #    - "1433:1433" # dev only
+  #
+  #  volumes:
+  #    - mssql-data:/var/opt/mssql
+  #  networks:
+  #    - documind-network
+  #  restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
     container_name: documind-db
     env_file:
-      - ${ENV_FILE}
+      - ${ENV_FILE:-.env.development}
     ports:
-      - "1433:1433" # dev only
-
+      - "5432:5432"
     volumes:
-      - mssql-data:/var/opt/mssql
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - documind-network
     restart: unless-stopped
@@ -64,5 +78,6 @@ networks:
     driver: bridge
 
 volumes:
-  mssql-data:
+  #mssql-data:
+  postgres-data:
   qdrant-data:

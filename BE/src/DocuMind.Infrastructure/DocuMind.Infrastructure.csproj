@@ -10,9 +10,11 @@
     <PackageReference Include="Google.GenAI" Version="0.9.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
     <PackageReference Include="Hangfire.Core" Version="1.8.14" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.13" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.14" />
     <PackageReference Include="itext7" Version="9.4.0" />
     <PackageReference Include="MimeKit" Version="4.14.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
     <PackageReference Include="Qdrant.Client" Version="1.16.1" />
     <PackageReference Include="SharpToken" Version="2.0.4" />
     <PackageReference Include="Supabase" Version="1.1.1" />

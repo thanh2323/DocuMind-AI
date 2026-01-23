@@ -13,7 +13,11 @@ namespace DocuMind.Infrastructure.Repositories
    public class UserRepository : GenericRepository<User>, IUserRepository
     {
 
-        public UserRepository(SqlServer context) : base(context)
+        //public UserRepository(SqlServer context) : base(context)
+        //{
+        //}
+
+        public UserRepository(PostgreSql context) : base(context)
         {
         }
 

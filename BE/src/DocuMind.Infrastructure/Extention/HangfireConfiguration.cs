@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hangfire;
-using Hangfire.SqlServer;
+//using Hangfire.SqlServer;
+using Hangfire.PostgreSql;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,17 +21,19 @@ namespace DocuMind.Infrastructure.Extention
                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                     .UseSimpleAssemblyNameTypeSerializer()
                     .UseRecommendedSerializerSettings()
-                    .UseSqlServerStorage(
-                        configuration.GetConnectionString("DefaultConnection"),
-                        new SqlServerStorageOptions
-                        {
-                            CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                            QueuePollInterval = TimeSpan.Zero,
-                            UseRecommendedIsolationLevel = true,
-                            DisableGlobalLocks = true,
-                            PrepareSchemaIfNecessary = false // Prevent auto-creation to avoid race condition with EF
-                        }
+                    //.UseSqlServerStorage(
+                    //    configuration.GetConnectionString("DefaultConnection"),
+                    //    new SqlServerStorageOptions
+                    //    {
+                    //        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    //        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    //        QueuePollInterval = TimeSpan.Zero,
+                    //        UseRecommendedIsolationLevel = true,
+                    //        DisableGlobalLocks = true
+                    //    }
+                    //);
+                    .UsePostgreSqlStorage(
+                         configuration.GetConnectionString("DefaultConnection")
                     );
             });
 

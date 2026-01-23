@@ -7,7 +7,8 @@ services:
     env_file:
       - ${ENV_FILE:-.env.production}
     depends_on:
-      - sql-db
+      #- sql-db
+      - postgres
       - qdrant
     networks:
       - documind-network
@@ -39,14 +40,33 @@ services:
       - no-new-privileges:true
     restart: always
 
-  sql-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  #sql-db:
+  #  image: mcr.microsoft.com/mssql/server:2022-latest
+  #  container_name: documind-db
+  #  env_file:
+  #    - ${ENV_FILE:-.env.production}
+  #  # Security: Ports not exposed externally
+  #  volumes:
+  #    - mssql-data:/var/opt/mssql
+  #  networks:
+  #    - documind-network
+  #  security_opt:
+  #    - no-new-privileges:true
+  #  logging:
+  #    driver: "json-file"
+  #    options:
+  #      max-size: "50m"
+  #      max-file: "3"
+  #  restart: always
+
+  postgres:
+    image: postgres:16-alpine
     container_name: documind-db
     env_file:
       - ${ENV_FILE:-.env.production}
     # Security: Ports not exposed externally
     volumes:
-      - mssql-data:/var/opt/mssql
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - documind-network
     security_opt:
@@ -75,6 +95,15 @@ services:
         max-file: "3"
     restart: always
 
+    certbot:
+      image: certbot/certbot
+      container_name: documind-certbot
+      volumes:
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+      networks:
+        - documind-networks
+
 networks:
   documind-network:
     driver: bridge
@@ -82,5 +111,6 @@ networks:
       com.docker.network.bridge.name: documind-net
 
 volumes:
-  mssql-data:
+  #mssql-data:
+  postgres-data:
   qdrant-data:

@@ -15,11 +15,13 @@ namespace DocuMind.Infrastructure.Data
     {
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
-            var logger = serviceProvider.GetRequiredService<ILogger<SqlServer>>();
+            //var logger = serviceProvider.GetRequiredService<ILogger<SqlServer>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<PostgreSql>>();
 
             try
             {
-                var context = serviceProvider.GetRequiredService<SqlServer>();
+                //var context = serviceProvider.GetRequiredService<SqlServer>();
+                var context = serviceProvider.GetRequiredService<PostgreSql>();
                 var passwordHasher = serviceProvider.GetRequiredService<IPasswordHasher>();
 
                 // Ensure database is created

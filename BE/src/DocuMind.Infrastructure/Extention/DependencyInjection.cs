@@ -40,8 +40,11 @@ namespace DocuMind.Infrastructure.Extention
         public static IServiceCollection AddInfrastructure(
            this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<SqlServer>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<SqlServer>(options =>
+            //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<PostgreSql>(options =>
+               options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
            
 
