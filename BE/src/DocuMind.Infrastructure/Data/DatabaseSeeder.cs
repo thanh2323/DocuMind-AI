@@ -29,15 +29,15 @@ namespace DocuMind.Infrastructure.Data
 
                 // Manually install Hangfire tables using a FRESH connection
                 // This prevents closing the shared DbContext connection
-                var connectionString = context.Database.GetConnectionString();
-                if (!string.IsNullOrEmpty(connectionString))
-                {
-                    using (var connection = new Microsoft.Data.SqlClient.SqlConnection(connectionString))
-                    {
-                        await connection.OpenAsync();
-                        Hangfire.SqlServer.SqlServerObjectsInstaller.Install(connection);
-                    }
-                }
+                //var connectionString = context.Database.GetConnectionString();
+                //if (!string.IsNullOrEmpty(connectionString))
+                //{
+                //    using (var connection = new Microsoft.Data.SqlClient.SqlConnection(connectionString))
+                //    {
+                //        await connection.OpenAsync();
+                //        Hangfire.SqlServer.SqlServerObjectsInstaller.Install(connection);
+                //    }
+                //}
 
                 // Seed Admin User
                 if (!await context.Users.AnyAsync(u => u.Role == "Admin"))
