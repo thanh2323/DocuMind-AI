@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocuMind.API.Tests", "tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocuMind.Core.Tests", "tests\DocuMind.Core.Tests\DocuMind.Core.Tests.csproj", "{33316F56-3962-46F6-B335-577EC970DD98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocuMind.Infrastructure", "tests\DocuMind.Infrastructure\DocuMind.Infrastructure.csproj", "{D2FBD545-D8F7-435D-B882-8633E744DA98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocuMind.Infrastructure.Tests", "tests\DocuMind.Infrastructure.Tests\DocuMind.Infrastructure.Tests.csproj", "{D2FBD545-D8F7-435D-B882-8633E744DA98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
