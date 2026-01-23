@@ -11,7 +11,11 @@ namespace DocuMind.Infrastructure.Repositories
 {
     public class SessionDocumentRepository : GenericRepository<SessionDocument>, ISessionDocumentRepository
     {
-        public SessionDocumentRepository(SqlServer context) : base(context)
+        //public SessionDocumentRepository(SqlServer context) : base(context)
+        //{
+        //}
+
+        public SessionDocumentRepository(PostgreSql context) : base(context)
         {
         }
 

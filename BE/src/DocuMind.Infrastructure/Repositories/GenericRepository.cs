@@ -11,10 +11,17 @@ namespace DocuMind.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IRepository<T> where T : class
     {
-        protected readonly SqlServer _context;
+        //protected readonly SqlServer _context;
+        protected readonly PostgreSql _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(SqlServer context)
+        //public GenericRepository(SqlServer context)
+        //{
+        //    _context = context;
+        //    _dbSet = _context.Set<T>();
+        //}
+
+        public GenericRepository(PostgreSql context)
         {
             _context = context;
             _dbSet = _context.Set<T>();

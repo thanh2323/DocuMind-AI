@@ -8,7 +8,11 @@ namespace DocuMind.Infrastructure.Repositories
 {
     public class ChatSessionRepository : GenericRepository<ChatSession> , IChatSessionRepository
     {
-        public ChatSessionRepository(SqlServer context) : base(context)
+        //public ChatSessionRepository(SqlServer context) : base(context)
+        //{
+        //}
+
+        public ChatSessionRepository(PostgreSql context) : base(context)
         {
         }
 

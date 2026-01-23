@@ -14,7 +14,11 @@ namespace DocuMind.Infrastructure.Repositories
 {
     public class DocumentRepository : GenericRepository<Document>, IDocumentRepository
     {
-        public DocumentRepository(SqlServer context) : base(context)
+        //public DocumentRepository(SqlServer context) : base(context)
+        //{
+        //}
+
+        public DocumentRepository(PostgreSql context) : base(context)
         {
         }
 
