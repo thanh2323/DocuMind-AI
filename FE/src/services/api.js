@@ -11,15 +11,15 @@ const api = axios.create({
     },
 });
 
-api.interceptors.request.use(
-    (config) => {
+api.interceptors.request.use((config) => {
+    if (!config.url.includes('/Auth/login') || !config.url.includes('/Auth/register')) {
         const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+    }
+    return config;
+});
+
 
 export default api;
