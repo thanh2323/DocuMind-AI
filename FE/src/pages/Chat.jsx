@@ -5,6 +5,7 @@ import { chatService } from "../services/chat.service";
 import { documentService } from "../services/document.service";
 import { authService } from "../services/auth.service";
 import Toast from "../components/Toast";
+import MarkdownRenderer from "../components/MarkdownRenderer";
 
 const ChatPage = () => {
   const { sessionId } = useParams();
@@ -521,12 +522,16 @@ const ChatPage = () => {
                         className={`px-5 py-3.5 ${
                           msg.isUser == true
                             ? "bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark rounded-3xl rounded-tr-md"
-                            : "text-text-light dark:text-text-dark leading-relaxed"
+                            : "text-text-light dark:text-text-dark leading-relaxed w-full"
                         }`}
                       >
-                        <p className="whitespace-pre-wrap text-[15px]">
-                          {msg.content}
-                        </p>
+                        {msg.isUser ? (
+                          <p className="whitespace-pre-wrap text-[15px]">
+                            {msg.content}
+                          </p>
+                        ) : (
+                          <MarkdownRenderer content={msg.content} />
+                        )}
                       </div>
                     </div>
                   </div>
