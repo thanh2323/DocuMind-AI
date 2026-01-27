@@ -43,4 +43,25 @@ export const documentService = {
     },
 
     // Add other document related methods here if needed (delete, list, etc.)
+    downloadDocument: async (documentId) => {
+        try {
+            const response = await api.get(`/api/Document/${documentId}/content`, {
+                responseType: 'blob',
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error downloading document:", error);
+            throw error;
+        }
+    },
+
+    deleteDocument: async (documentId) => {
+        try {
+            const response = await api.delete(`/api/Document/${documentId}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting document:", error);
+            throw error;
+        }
+    },
 };

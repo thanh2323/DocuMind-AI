@@ -47,9 +47,44 @@ namespace DocuMind.Application.Services.DocumentService
             _options = options.Value;
             _logger = logger;
         }
-        public Task<ServiceResult<bool>> DeleteAsync(int userId, int documentId, bool isAdmin)
+        public async Task<ServiceResult<bool>> DeleteAsync(int userId, int documentId, bool isAdmin)
         {
-            throw new NotImplementedException();
+            var document = await _documentRepository.GetByIdAsync(documentId);
+            if (document == null)
+            {
+                return ServiceResult<bool>.Fail("Document not found");
+            }
+
+            if (document.UserId != userId && !isAdmin)
+            {
+                return ServiceResult<bool>.Fail("Access denied");
+            }
+
+            try
+            {
+                // 1. Delete from Storage
+                if (!string.IsNullOrEmpty(document.FilePath))
+                {
+                    await _storageService.DeleteAsync(document.FilePath);
+                }
+
+                // 2. Delete from Vector DB
+                await _vectorDbService.DeleteDocumentVectorsAsync(document.Id);
+
+                // 3. Delete from SessionDocuments (Join Table)
+                await _sessionDocumentRepository.DeleteByDocumentIdAsync(document.Id);
+
+                // 4. Delete from Database
+                await _documentRepository.DeleteAsync(document);
+                await _documentRepository.SaveChangesAsync();
+
+                return ServiceResult<bool>.Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting document {DocumentId}", documentId);
+                return ServiceResult<bool>.Fail("Failed to delete document");
+            }
         }
 
         public async Task<ServiceResult<List<DocumentItemDto>>> CheckStatusAsync(int userId, List<int> documentIds)

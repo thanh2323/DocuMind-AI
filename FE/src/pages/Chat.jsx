@@ -25,6 +25,8 @@ const ChatPage = () => {
   const [isSourcesOpen, setIsSourcesOpen] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [toast, setToast] = useState(null);
+  const [viewingDocumentUrl, setViewingDocumentUrl] = useState(null);
+  const [viewingDocumentName, setViewingDocumentName] = useState(null);
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -151,7 +153,12 @@ const ChatPage = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedDocIds(documents.map((d) => d.id));
+      // Filter out error documents and pending documents (if strictly needed, but pending might be okay)
+      // Requirement: "các file error sẽ không được tích chọn bất kể cách nào"
+      const validDocs = documents.filter(
+        (d) => d.status !== 2 && d.status !== "Error"
+      );
+      setSelectedDocIds(validDocs.map((d) => d.id));
     } else {
       setSelectedDocIds([]);
     }
@@ -301,6 +308,52 @@ const ChatPage = () => {
     }
   };
 
+  const handleViewDocument = async (doc) => {
+    try {
+      const blob = await documentService.downloadDocument(doc.id);
+      const url = URL.createObjectURL(blob);
+      setViewingDocumentUrl(url);
+      setViewingDocumentName(doc.fileName);
+    } catch (error) {
+      console.error("Failed to view document", error);
+      setToast({
+        message: "Failed to view document. Please try again.",
+        type: "error",
+      });
+    }
+  };
+
+  const handleDeleteDocument = async (doc) => {
+    if (!window.confirm(`Are you sure you want to delete "${doc.fileName}"?`)) {
+      return;
+    }
+
+    try {
+      await documentService.deleteDocument(doc.id);
+      
+      // Update UI
+      setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
+      setSelectedDocIds((prev) => prev.filter((id) => id !== doc.id));
+
+      // If viewing this document, close viewer
+      if (viewingDocumentName === doc.fileName) {
+        setViewingDocumentUrl(null);
+        setViewingDocumentName(null);
+      }
+
+      setToast({
+        message: "Document deleted successfully",
+        type: "success",
+      });
+    } catch (error) {
+       console.error("Failed to delete document", error);
+       setToast({
+        message: "Failed to delete document.",
+        type: "error",
+      });
+    }
+  };
+
   return (
     <div className="font-display bg-[#f8f9fa] dark:bg-background-dark text-text-light dark:text-text-dark h-full overflow-hidden flex flex-col relative w-full">
       {toast && (
@@ -316,9 +369,12 @@ const ChatPage = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsSourcesOpen(!isSourcesOpen)}
-            className="md:hidden p-2 text-subtext-light"
+            className="p-2 text-subtext-light hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            title={isSourcesOpen ? "Collapse Sidebar" : "Expand Sidebar"}
           >
-            <span className="material-symbols-outlined">menu</span>
+            <span className="material-symbols-outlined">
+              {isSourcesOpen ? "menu_open" : "menu"}
+            </span>
           </button>
           <div>
             <h1 className="text-lg font-semibold text-slate-900 dark:text-white truncate max-w-xs md:max-w-md">
@@ -413,23 +469,23 @@ const ChatPage = () => {
                         : "hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`}
                   >
-                    <div
-                      className="flex items-center gap-3 overflow-hidden flex-1"
-                      onClick={() =>
-                        !isProcessing && !isError && toggleDocument(doc.id)
-                      }
-                    >
                       <div
-                        className={`w-8 h-8 rounded flex items-center justify-center shrink-0 ${
-                          selectedDocIds.includes(doc.id)
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
+                        className="flex items-center gap-3 overflow-hidden flex-1"
+                        onClick={() =>
+                           !isProcessing && !isError && toggleDocument(doc.id)
+                        }
                       >
-                        <span className="material-symbols-outlined text-lg">
-                          {isError ? "error" : "article"}
-                        </span>
-                      </div>
+                        <div
+                          className={`w-8 h-8 rounded flex items-center justify-center shrink-0 ${
+                            selectedDocIds.includes(doc.id)
+                              ? "bg-blue-100 text-blue-600"
+                              : "bg-gray-100 text-gray-500"
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-lg">
+                            {isError ? "error" : "article"}
+                          </span>
+                        </div>
                       <div className="flex flex-col overflow-hidden">
                         <span
                           className={`text-sm truncate ${
@@ -452,6 +508,35 @@ const ChatPage = () => {
                         )}
                       </div>
                     </div>
+                    
+                    {/* Actions - Only on Hover */}
+                    {!isProcessing && (
+                      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        {!isError && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleViewDocument(doc);
+                            }}
+                            className="p-1.5 rounded-full text-gray-400 hover:text-primary hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+                            title="View Document"
+                          >
+                             <span className="material-symbols-outlined text-lg">visibility</span>
+                          </button>
+                        )}
+                         <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteDocument(doc);
+                          }}
+                          className="p-1.5 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                          title="Delete Document"
+                        >
+                           <span className="material-symbols-outlined text-lg">delete</span>
+                        </button>
+                      </div>
+                    )}
+
                     {isProcessing ? (
                       <div className="w-4 h-4 mr-2 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0"></div>
                     ) : isError ? (
@@ -479,9 +564,15 @@ const ChatPage = () => {
         </aside>
 
         {/* Main Chat Content */}
-        <main className="flex-1 flex flex-col bg-white dark:bg-background-dark h-full relative w-full">
-          <div className="flex-1 overflow-y-auto p-4 md:p-8 md:px-20 lg:px-32 xl:px-48 scroll-smooth">
-            <div className="max-w-4xl mx-auto space-y-6 pb-24">
+        <main
+          className={`flex flex-col bg-white dark:bg-background-dark h-full relative transition-all duration-300 ${
+            viewingDocumentUrl
+              ? "w-1/2 border-r border-border-light dark:border-border-dark"
+              : "flex-1 w-full"
+          }`}
+        >
+          <div className={`flex-1 overflow-y-auto ${viewingDocumentUrl ? "p-4" : "p-4 md:p-8 md:px-12 lg:px-24 xl:px-32"} scroll-smooth`}>
+            <div className={`mx-auto space-y-6 pb-24 ${viewingDocumentUrl ? "max-w-full" : "max-w-4xl"}`}>
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg text-white">
@@ -593,6 +684,31 @@ const ChatPage = () => {
             </div>
           </div>
         </main>
+        {viewingDocumentUrl && (
+          <div className="w-1/2 h-full bg-gray-50 dark:bg-gray-900 flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="flex items-center justify-between p-3 border-b border-border-light dark:border-border-dark bg-white dark:bg-content-dark shrink-0">
+              <h3 className="font-semibold text-text-light dark:text-text-dark truncate pr-4 text-sm">
+                {viewingDocumentName}
+              </h3>
+              <button
+                onClick={() => {
+                  setViewingDocumentUrl(null);
+                  setViewingDocumentName(null);
+                }}
+                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-subtext-light dark:text-subtext-dark transition-colors"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden relative bg-white">
+              <iframe
+                src={viewingDocumentUrl}
+                className="w-full h-full border-none"
+                title="Document Viewer"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

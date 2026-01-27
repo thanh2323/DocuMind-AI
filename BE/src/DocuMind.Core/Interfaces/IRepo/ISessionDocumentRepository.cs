@@ -10,6 +10,7 @@ namespace DocuMind.Core.Interfaces.IRepo
     public interface ISessionDocumentRepository : IRepository<SessionDocument>
     {
         Task AddRangeAsync(IEnumerable<SessionDocument> entities);
+        Task DeleteByDocumentIdAsync(int documentId);
 
     }
 }
