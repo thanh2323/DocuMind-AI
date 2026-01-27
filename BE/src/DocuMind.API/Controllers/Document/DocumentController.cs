@@ -47,5 +47,19 @@ namespace DocuMind.API.Controllers.Document
 
             return Ok(result.Data);
         }
+
+        [HttpGet("{documentId}/content")]
+        public async Task<IActionResult> GetDocumentContent(int documentId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _documentService.GetDocumentContent(int.Parse(userId), documentId);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return File(result.Data.Stream, result.Data.ContentType, result.Data.FileName);
+        }
     }
 }
