@@ -47,9 +47,44 @@ namespace DocuMind.Application.Services.DocumentService
             _options = options.Value;
             _logger = logger;
         }
-        public Task<ServiceResult<bool>> DeleteAsync(int userId, int documentId, bool isAdmin)
+        public async Task<ServiceResult<bool>> DeleteAsync(int userId, int documentId, bool isAdmin)
         {
-            throw new NotImplementedException();
+            var document = await _documentRepository.GetByIdAsync(documentId);
+            if (document == null)
+            {
+                return ServiceResult<bool>.Fail("Document not found");
+            }
+
+            if (document.UserId != userId && !isAdmin)
+            {
+                return ServiceResult<bool>.Fail("Access denied");
+            }
+
+            try
+            {
+                // 1. Delete from Storage
+                if (!string.IsNullOrEmpty(document.FilePath))
+                {
+                    await _storageService.DeleteAsync(document.FilePath);
+                }
+
+                // 2. Delete from Vector DB
+                await _vectorDbService.DeleteDocumentVectorsAsync(document.Id);
+
+                // 3. Delete from SessionDocuments (Join Table)
+                await _sessionDocumentRepository.DeleteByDocumentIdAsync(document.Id);
+
+                // 4. Delete from Database
+                await _documentRepository.DeleteAsync(document);
+                await _documentRepository.SaveChangesAsync();
+
+                return ServiceResult<bool>.Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting document {DocumentId}", documentId);
+                return ServiceResult<bool>.Fail("Failed to delete document");
+            }
         }
 
         public async Task<ServiceResult<List<DocumentItemDto>>> CheckStatusAsync(int userId, List<int> documentIds)
@@ -148,6 +183,49 @@ namespace DocuMind.Application.Services.DocumentService
             };
 
             return ServiceResult<DocumentItemDto>.Ok(returnDto);
+        }
+
+        public async Task<ServiceResult<(Stream Stream, string ContentType, string FileName)>> GetDocumentContent(int userId, int documentId)
+        {
+            var document = await _documentRepository.GetByIdAsync(documentId);
+
+            if (document == null)
+            {
+                return ServiceResult<(Stream Stream, string ContentType, string FileName)>.Fail("Document not found");
+            }
+
+            if (document.UserId != userId)
+            {
+                return ServiceResult<(Stream Stream, string ContentType, string FileName)>.Fail("Access denied");
+            }
+
+            try
+            {
+                var stream = await _storageService.GetFileStreamAsync(document.FilePath);
+                var contentType = GetContentType(document.FileName);
+                return ServiceResult<(Stream Stream, string ContentType, string FileName)>.Ok((stream, contentType, document.FileName));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting document content for document {DocumentId}", documentId);
+                return ServiceResult<(Stream Stream, string ContentType, string FileName)>.Fail("Failed to retrieve document content");
+            }
+        }
+
+        private string GetContentType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
+            {
+                ".pdf" => "application/pdf",
+                ".txt" => "text/plain",
+                ".doc" => "application/msword",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                _ => "application/octet-stream"
+            };
         }
     }
 }

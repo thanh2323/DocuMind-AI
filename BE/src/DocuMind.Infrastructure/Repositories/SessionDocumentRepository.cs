@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DocuMind.Core.Entities;
 using DocuMind.Core.Interfaces.IRepo;
 using DocuMind.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocuMind.Infrastructure.Repositories
 {
@@ -22,6 +23,11 @@ namespace DocuMind.Infrastructure.Repositories
         public async Task AddRangeAsync(IEnumerable<SessionDocument> entities)
         {
             await _context.SessionDocuments.AddRangeAsync(entities);
+        }
+
+        public async Task DeleteByDocumentIdAsync(int documentId)
+        {
+            await _context.SessionDocuments.Where(sd => sd.DocumentId == documentId).ExecuteDeleteAsync();
         }
 
     }
